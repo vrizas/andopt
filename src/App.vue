@@ -167,7 +167,7 @@ function closeRegisterPopUp() {
       </form>
       <p class="mt-8 text-center">
         Sudah punya akun ?
-        <button class="text-primary" @click="showRegisterPopUp">
+        <button class="text-primary" @click="closeRegisterPopUp">
           Masuk sekarang
         </button>
       </p>
