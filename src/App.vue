@@ -9,6 +9,7 @@ const registerPopup = ref(null);
 
 function showLoginPopUp() {
   authPopupContainer.value.classList.remove("hidden");
+  gsap.to(registerPopup.value, { duration: 0.3, y: "100%", ease: "power2" });
   gsap.to(loginPopup.value, { duration: 0.3, y: 0, ease: "power2" });
 }
 
@@ -20,6 +21,7 @@ function closeLoginPopUp() {
 }
 
 function showRegisterPopUp() {
+  authPopupContainer.value.classList.remove("hidden");
   gsap.to(loginPopup.value, { duration: 0.3, y: "100%", ease: "power2" });
   gsap.to(registerPopup.value, { duration: 0.3, y: 0, ease: "power2" });
 }
@@ -77,7 +79,7 @@ function closeRegisterPopUp() {
       class="w-full h-full bg-white translate-y-full py-4 px-5 absolute top-0 left-0"
       ref="loginPopup"
     >
-      <button class="text-3xl" @click="closeLoginPopUp">
+      <button class="absolute right-5 text-3xl" @click="closeLoginPopUp">
         <ion-icon name="close"></ion-icon>
       </button>
       <h2 class="text-primary text-2xl font-semibold my-5">Masuk</h2>
@@ -120,7 +122,7 @@ function closeRegisterPopUp() {
       class="w-full h-full bg-white translate-y-full py-4 px-5 absolute top-0 left-0"
       ref="registerPopup"
     >
-      <button class="text-3xl" @click="closeRegisterPopUp">
+      <button class="absolute right-5 text-3xl" @click="closeRegisterPopUp">
         <ion-icon name="close"></ion-icon>
       </button>
       <h2 class="text-primary text-2xl font-semibold my-5">Daftar</h2>
@@ -167,7 +169,7 @@ function closeRegisterPopUp() {
       </form>
       <p class="mt-8 text-center">
         Sudah punya akun ?
-        <button class="text-primary" @click="closeRegisterPopUp">
+        <button class="text-primary" @click="showLoginPopUp">
           Masuk sekarang
         </button>
       </p>
