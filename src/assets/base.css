@@ -8,8 +8,16 @@
   box-sizing: border-box;
 }
 
-a {
-  text-decoration: none;
-  color: #000;
+:root {
+  --primary: #2F957F;
+  --secondary: #E06B2D;
+  --darkGray: #628281;
+  --lightGray: #C4C4C4;
+  --white: #F9F9F9;
+  --black: #191919;
+  --pink: #EF144A;
 }
 
+body {
+  font-family: 'Poppins', sans-serif;
+}
