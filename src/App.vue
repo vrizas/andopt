@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 
 const authPopupContainer = ref(null);
 const loginPopup = ref(null);
+const registerPopup = ref(null);
 
 function showLoginPopUp() {
   authPopupContainer.value.classList.remove("hidden");
@@ -13,6 +14,18 @@ function showLoginPopUp() {
 
 function closeLoginPopUp() {
   gsap.to(loginPopup.value, { duration: 0.3, y: "100%", ease: "power2" });
+  setTimeout(() => {
+    authPopupContainer.value.classList.add("hidden");
+  }, 300);
+}
+
+function showRegisterPopUp() {
+  gsap.to(loginPopup.value, { duration: 0.3, y: "100%", ease: "power2" });
+  gsap.to(registerPopup.value, { duration: 0.3, y: 0, ease: "power2" });
+}
+
+function closeRegisterPopUp() {
+  gsap.to(registerPopup.value, { duration: 0.3, y: "100%", ease: "power2" });
   setTimeout(() => {
     authPopupContainer.value.classList.add("hidden");
   }, 300);
@@ -57,13 +70,107 @@ function closeLoginPopUp() {
     <div class="indicator"></div>
   </nav>
   <section
-    class="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,.5)] hidden"
+    class="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,.5)] hidden overflow-hidden"
     ref="authPopupContainer"
   >
-    <div class="w-full h-full bg-white translate-y-full p-3" ref="loginPopup">
+    <div
+      class="w-full h-full bg-white translate-y-full py-4 px-5 absolute top-0 left-0"
+      ref="loginPopup"
+    >
       <button class="text-3xl" @click="closeLoginPopUp">
         <ion-icon name="close"></ion-icon>
       </button>
+      <h2 class="text-primary text-2xl font-semibold my-5">Masuk</h2>
+      <form class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="useremail">Username / Email</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="text"
+            id="useremail"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="password">Password</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="password"
+            id="password"
+          />
+        </div>
+        <div class="w-full text-right my-3">
+          <button>Lupa password ?</button>
+        </div>
+        <div class="w-full text-center">
+          <button
+            class="bg-primary text-white px-4 py-3 w-1/3 rounded text-md font-semibold"
+          >
+            Masuk
+          </button>
+        </div>
+      </form>
+      <p class="mt-8 text-center">
+        Belum punya akun ?
+        <button class="text-primary" @click="showRegisterPopUp">
+          Daftar sekarang
+        </button>
+      </p>
+    </div>
+    <div
+      class="w-full h-full bg-white translate-y-full py-4 px-5 absolute top-0 left-0"
+      ref="registerPopup"
+    >
+      <button class="text-3xl" @click="closeRegisterPopUp">
+        <ion-icon name="close"></ion-icon>
+      </button>
+      <h2 class="text-primary text-2xl font-semibold my-5">Daftar</h2>
+      <form class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="user">Username</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="text"
+            id="user"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="email">Email</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="text"
+            id="email"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="password">Password</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="password"
+            id="password"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="konfirmpassword">Konfirmasi Password</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary"
+            type="password"
+            id="konfirmpassword"
+          />
+        </div>
+        <div class="w-full text-center">
+          <button
+            class="bg-primary text-white px-4 py-3 w-1/3 rounded text-md font-semibold mt-12"
+          >
+            Daftar
+          </button>
+        </div>
+      </form>
+      <p class="mt-8 text-center">
+        Sudah punya akun ?
+        <button class="text-primary" @click="showRegisterPopUp">
+          Masuk sekarang
+        </button>
+      </p>
     </div>
   </section>
   <!-- <RouterView /> -->
