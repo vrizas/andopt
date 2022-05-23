@@ -1,10 +1,15 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import AppMobile from './AppMobile.vue'
+import AppDesktop from './AppDesktop.vue'
+import routerMobile from './router/mobile'
+import routerDesktop from './router/desktop'
 import './assets/base.css'
 
-const app = createApp(App)
 
-app.use(router)
+const isMobile = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 
-app.mount('#app')
+if (isMobile) {
+    createApp(AppMobile).use(routerMobile).mount('#app')
+} else {
+    createApp(AppDesktop).use(routerDesktop).mount('#app')
+}
