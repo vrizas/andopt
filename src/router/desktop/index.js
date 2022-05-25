@@ -10,8 +10,32 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/profile',
+      path: '/my',
       name: 'profile',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/desktop/ProfileView.vue')
+    },
+    {
+      path: '/my/favorites',
+      name: 'favorites',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/desktop/ProfileView.vue')
+    },
+    {
+      path: '/my/lastseen',
+      name: 'lastseen',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/desktop/ProfileView.vue')
+    },
+    {
+      path: '/my/upload',
+      name: 'upload',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
