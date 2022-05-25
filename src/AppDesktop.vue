@@ -195,6 +195,7 @@ onMounted(() => {
       </p>
     </div>
   </section>
+  <RouterView />
 </template>
 
 <style scoped></style>
