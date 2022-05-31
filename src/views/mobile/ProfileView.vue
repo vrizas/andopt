@@ -1,45 +1,43 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { reactive, computed } from "vue";
-import gsap from "gsap";
+import {
+  ref, onMounted, reactive, computed,
+} from 'vue';
+
+import gsap from 'gsap';
 
 const editProfilePopupContainer = ref(null);
 const editProfilePopup = ref(null);
+const currentHashLink = reactive({
+  hash: '#',
+});
 
 function showEditProfilePopUpHandler() {
-  currentHashLink.hash = "#edit";
-  gsap.to(editProfilePopup.value, { duration: 0.3, y: 0, ease: "power2" });
+  currentHashLink.hash = '#edit';
+  gsap.to(editProfilePopup.value, { duration: 0.3, y: 0, ease: 'power2' });
 
-  history.replaceState(undefined, undefined, "#edit");
+  history.replaceState(undefined, undefined, '#edit');
 }
 
 function closeEditProfilePopUpHandler() {
-  gsap.to(editProfilePopup.value, { duration: 0.3, y: "100%", ease: "power2" });
+  gsap.to(editProfilePopup.value, { duration: 0.3, y: '100%', ease: 'power2' });
   setTimeout(() => {
-    currentHashLink.hash = "#";
-    history.replaceState(undefined, undefined, "#");
+    currentHashLink.hash = '#';
+    history.replaceState(undefined, undefined, '#');
   }, 300);
 }
 
-const currentHashLink = reactive({
-  hash: "#",
-});
-
-const showEditProfilePopUp = computed(() => {
-  return currentHashLink.hash === "#edit";
-});
+const showEditProfilePopUp = computed(() => currentHashLink.hash === '#edit');
 
 onMounted(() => {
-  currentHashLink.hash = window.location.hash || "#";
+  currentHashLink.hash = window.location.hash || '#';
 
-  if (currentHashLink.hash === "#edit") {
+  if (currentHashLink.hash === '#edit') {
     showEditProfilePopUpHandler();
   }
 });
 </script>
 
 <template>
-  <header class="bg-primary w-full h-[60px]"></header>
   <main class="py-8 px-4">
     <section class="flex items-center gap-4 relative">
       <span

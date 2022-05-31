@@ -1,14 +1,15 @@
 <script setup>
-import { gsap } from "gsap";
-import { ref, onMounted } from "vue";
+import { gsap } from 'gsap';
+import { ref, onMounted } from 'vue';
+
 const loginPopup = ref(null);
 
 const closePopup = () => {
-  window.location.hash = '/'
+  window.location.hash = '/';
 };
 
 onMounted(() => {
-  gsap.to(loginPopup.value, { duration: 0.3, scale: 1, ease: "power2" });
+  gsap.to(loginPopup.value, { duration: 0.3, scale: 1, ease: 'power2' });
 });
 </script>
 
