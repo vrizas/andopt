@@ -21,7 +21,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/']);
 <template>
   <div>
     <header
-      class="bg-primary flex justify-between sticky top-0 left-0 align-center py-3 px-5"
+      class="bg-primary flex justify-between sticky top-0 left-0 align-center py-3 px-10"
     >
       <h1 class="relative text-white text-xs font-semibold font-montserrat">
         <a href="/">

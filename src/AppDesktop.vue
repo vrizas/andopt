@@ -6,6 +6,7 @@ import {
 import { RouterView } from 'vue-router';
 import { gsap } from 'gsap';
 import HeaderBar from './components/desktop/HeaderBar.vue';
+import FooterBar from './components/desktop/FooterBar.vue';
 
 const loginPopup = ref(null);
 const registerPopup = ref(null);
@@ -68,6 +69,7 @@ onMounted(() => {
   <div>
     <HeaderBar />
     <RouterView />
+    <FooterBar />
   </div>
 </template>
 
