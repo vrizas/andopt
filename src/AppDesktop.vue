@@ -5,12 +5,28 @@ import {
 
 import { RouterView } from 'vue-router';
 import { gsap } from 'gsap';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import HeaderBar from './components/desktop/HeaderBar.vue';
+import FooterBar from './components/desktop/FooterBar.vue';
 
 const loginPopup = ref(null);
 const registerPopup = ref(null);
+const isLoggedIn = ref(false);
+const username = ref('');
 const currentHashLink = reactive({
   hash: '#',
+});
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const { displayName } = user;
+    username.value = displayName;
+    isLoggedIn.value = true;
+  } else {
+    isLoggedIn.value = false;
+  }
 });
 
 function showLoginPopUpHandler() {
@@ -66,8 +82,9 @@ onMounted(() => {
 
 <template>
   <div>
-    <HeaderBar />
+    <HeaderBar :isLoggedIn="isLoggedIn" :username="username" />
     <RouterView />
+    <FooterBar :isLoggedIn="isLoggedIn" />
   </div>
 </template>
 

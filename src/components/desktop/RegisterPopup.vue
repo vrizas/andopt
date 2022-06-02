@@ -1,11 +1,56 @@
 <script setup>
 import { gsap } from 'gsap';
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const registerPopup = ref(null);
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const passwordEl = ref(null);
+const confirmPasswordEl = ref(null);
+const router = useRouter();
+const auth = getAuth();
 
 const closePopup = () => {
   window.location.hash = '/';
+};
+
+const submitHandler = async (e) => {
+  e.preventDefault();
+
+  if (!username.value || !email.value || !password.value || !confirmPassword.value) {
+    alert('Mohon isi semua field');
+  } else {
+    if (password.value !== confirmPassword.value) {
+      passwordEl.value.style.borderColor = '#EF144A';
+      confirmPasswordEl.value.style.borderColor = '#EF144A';
+      gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' });
+      gsap.from(confirmPasswordEl.value, { duration: 0.3, x: 10, ease: 'bounce' });
+    }
+
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+      .then((userCredential) => {
+        const { user } = userCredential;
+        updateProfile(auth.currentUser, {
+          displayName: username.value,
+        }).then(() => {
+          // Profile updated!
+          // ...
+        }).catch((error) => {
+          // An error occurred
+          // ...
+        });
+        closePopup();
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
 };
 
 onMounted(() => {
@@ -15,7 +60,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="absolute top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
+    class="fixed top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
     ref="registerPopupContainer"
     @click="closePopup"
   >
@@ -25,12 +70,13 @@ onMounted(() => {
       @click="(e) => e.stopPropagation()"
     >
       <h2 class="text-primary text-xl font-semibold my-5">Daftar</h2>
-      <form class="flex flex-col gap-3 text-sm">
+      <form class="flex flex-col gap-3 text-sm" @submit.prevent="submitHandler">
         <div class="flex flex-col gap-1">
           <label for="username">Username</label>
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
             type="text"
+            v-model="username"
             id="username"
           />
         </div>
@@ -39,23 +85,31 @@ onMounted(() => {
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
             type="email"
+            v-model="email"
             id="email"
+            required
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label for="register-password">Password</label>
+          <label for="password">Password</label>
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
             type="password"
-            id="register-password"
+            v-model="password"
+            ref="passwordEl"
+            id="password"
+            required
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label for="confirm-password">Konfirmasi Password</label>
+          <label for="confirmPassword">Konfirmasi Password</label>
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
             type="password"
-            id="confirm-password"
+            v-model="confirmPassword"
+            ref="confirmPasswordEl"
+            id="confirmPassword"
+            required
           />
         </div>
         <div class="w-full text-center">

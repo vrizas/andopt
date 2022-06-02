@@ -1,0 +1,75 @@
+<script setup>
+import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
+import { getAuth, signOut } from 'firebase/auth';
+
+defineProps({
+  username: String,
+});
+
+const isMenuOpen = ref(false);
+
+const auth = getAuth();
+
+const signOutHandler = () => {
+  signOut(auth).then(() => {
+    // Sign-out successful.
+  }).catch((error) => {
+    // An error happened.
+  });
+};
+</script>
+
+<template>
+    <div class="relative" @mouseleave="isMenuOpen = false">
+        <RouterLink to="/my" @mouseover="isMenuOpen = true">
+            <img src="../../assets/images/cat.jpg" alt="" width="30" class="rounded-full" draggable="false">
+        </RouterLink>
+        <transition
+        enter-active-class="transition ease-out duration-100"
+        enter-class="transform opacity-0 scale-95"
+        enter-to-class="transform opacity-100 scale-100"
+        leave-active-class="transition ease-in duration-75"
+        leave-class="transform opacity-100 scale-100"
+        leave-to-class="transform opacity-0 scale-95"
+        >
+        <div v-if="isMenuOpen" class="py-2 absolute right-0">
+            <div class="w-48 bg-white rounded-md shadow-andopt">
+                <p class="flex justify-between py-2 px-3 text-sm mb-3">
+                    <span class="flex gap-2 items-center font-semibold truncate">
+                        <img src="../../assets/images/cat.jpg" alt="profil" width="25" class="rounded-full" draggable="false">
+                        {{username}}
+                    </span>
+                    <RouterLink to="/my" class="text-darkGray">
+                        <font-awesome-icon icon="gear" />
+                    </RouterLink>
+                </p>
+                <RouterLink to="/my/favorite" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                    <span class="w-6 h-6 rounded-full bg-pink text-white flex items-center justify-center text-xs">
+                        <font-awesome-icon icon="heart"/>
+                    </span>
+                    Favorit Saya
+                </RouterLink>
+                <RouterLink to="/my/lastseen" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                    <span class="w-6 h-6 rounded-full bg-darkGray text-white flex items-center justify-center text-xs">
+                        <font-awesome-icon icon="clock" />
+                    </span>
+                    Terakhir Dilihat
+                </RouterLink>
+                <RouterLink to="/my/favorite" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                    <span class="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center text-xs">
+                        <font-awesome-icon icon="paw" />
+                    </span>
+                    Unggahan Saya
+                </RouterLink>
+                <hr class="text-lightGray">
+                <button class=" w-full flex gap-2 items-center py-2 px-3 hover:bg-pink hover:text-white rounded-b-md" @click="signOutHandler">
+                    <font-awesome-icon icon="right-from-bracket" />
+                    Keluar
+                </button>
+            </div>
+        </div>
+
+        </transition>
+    </div>
+</template>
