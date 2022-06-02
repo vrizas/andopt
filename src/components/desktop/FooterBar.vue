@@ -1,9 +1,12 @@
 <script setup>
+defineProps({
+  isLoggedIn: Boolean,
+});
 </script>
 
 <template>
     <footer class="text-center text-white bg-primary mt-10">
-        <div class="p-6">
+        <div class="p-6" v-if="isLoggedIn === false">
             <div class="">
             <p class="flex justify-center items-center text-sm">
                 <span class="mr-4">Daftar gratis</span>

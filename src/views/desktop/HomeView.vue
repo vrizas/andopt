@@ -13,6 +13,7 @@ const cities = ref([
   'Tangerang',
   'Depok',
   'Bekasi',
+  'Tasikmalaya',
 ]);
 const filteredCities = ref([]);
 

@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   cities: {
-    type: String,
+    type: Array,
     required: true,
   },
   clickHandler: {
