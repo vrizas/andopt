@@ -1,61 +1,60 @@
 <script setup>
-import { gsap } from 'gsap';
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { gsap } from 'gsap'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 
-const registerPopup = ref(null);
-const username = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-const passwordEl = ref(null);
-const confirmPasswordEl = ref(null);
-const router = useRouter();
-const auth = getAuth();
+const registerPopup = ref(null)
+const username = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const passwordEl = ref(null)
+const confirmPasswordEl = ref(null)
+const router = useRouter()
+const auth = getAuth()
 
 const closePopup = () => {
-  window.location.hash = '/';
-};
+  window.location.hash = '/'
+}
 
 const submitHandler = async (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
   if (!username.value || !email.value || !password.value || !confirmPassword.value) {
-    alert('Mohon isi semua field');
+    alert('Mohon isi semua field')
   } else {
     if (password.value !== confirmPassword.value) {
-      passwordEl.value.style.borderColor = '#EF144A';
-      confirmPasswordEl.value.style.borderColor = '#EF144A';
-      gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' });
-      gsap.from(confirmPasswordEl.value, { duration: 0.3, x: 10, ease: 'bounce' });
+      passwordEl.value.style.borderColor = '#EF144A'
+      confirmPasswordEl.value.style.borderColor = '#EF144A'
+      gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' })
+      gsap.from(confirmPasswordEl.value, { duration: 0.3, x: 10, ease: 'bounce' })
     }
 
     createUserWithEmailAndPassword(auth, email.value, password.value)
       .then((userCredential) => {
-        const { user } = userCredential;
+        const { user } = userCredential
         updateProfile(auth.currentUser, {
-          displayName: username.value,
+          displayName: username.value
         }).then(() => {
           // Profile updated!
           // ...
         }).catch((error) => {
-          // An error occurred
-          // ...
-        });
-        closePopup();
+          alert(error.message)
+        })
+        closePopup()
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+        const errorCode = error.code
+        const errorMessage = error.message
+      })
   }
-};
+}
 
 onMounted(() => {
-  gsap.to(registerPopup.value, { duration: 0.3, scale: 1, ease: 'power2' });
-});
+  gsap.to(registerPopup.value, { duration: 0.3, scale: 1, ease: 'power2' })
+})
 </script>
 
 <template>

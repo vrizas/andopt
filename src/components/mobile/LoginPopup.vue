@@ -1,12 +1,12 @@
 <script setup>
-import { gsap } from 'gsap';
-import { ref, onMounted } from 'vue';
+import { gsap } from 'gsap'
+import { ref, onMounted } from 'vue'
 
-const loginPopup = ref(null);
+const loginPopup = ref(null)
 
 onMounted(() => {
-  gsap.to(loginPopup.value, { duration: 0.3, y: 0, ease: 'power2' });
-});
+  gsap.to(loginPopup.value, { duration: 0.3, y: 0, ease: 'power2' })
+})
 </script>
 
 <template>

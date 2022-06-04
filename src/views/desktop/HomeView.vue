@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue';
+import { ref } from 'vue'
+import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 
-const cityInput = ref(null);
-const autoCompleteList = ref(null);
-const autoCompleteListVisible = ref(false);
+const cityInput = ref(null)
+const autoCompleteList = ref(null)
+const autoCompleteListVisible = ref(false)
 const cities = ref([
   'Aceh',
   'Kab. Aceh Barat, Aceh',
@@ -549,25 +549,25 @@ const cities = ref([
   'Kab. Tambrauw, Papua Barat',
   'Kab. Teluk Bintuni, Papua Barat',
   'Kab. Teluk Wondama, Papua Barat',
-  'Kota Sorong, Papua Barat',
-]);
-const filteredCities = ref([]);
+  'Kota Sorong, Papua Barat'
+])
+const filteredCities = ref([])
 
 const autoCompleteHandler = (e) => {
-  const userData = e.target.value;
+  const userData = e.target.value
   if (userData) {
-    filteredCities.value = cities.value.filter((city) => city.toLowerCase().includes(userData.toLowerCase()));
-    autoCompleteListVisible.value = true;
+    filteredCities.value = cities.value.filter((city) => city.toLowerCase().includes(userData.toLowerCase()))
+    autoCompleteListVisible.value = true
   } else {
-    autoCompleteListVisible.value = false;
+    autoCompleteListVisible.value = false
   }
-};
+}
 
 const useAutocomplete = (e) => {
-  const choosenCity = e.target.innerText.trim();
-  cityInput.value.value = choosenCity;
-  autoCompleteListVisible.value = false;
-};
+  const choosenCity = e.target.innerText.trim()
+  cityInput.value.value = choosenCity
+  autoCompleteListVisible.value = false
+}
 </script>
 
 <template>

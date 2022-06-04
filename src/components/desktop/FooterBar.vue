@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
-  isLoggedIn: Boolean,
-});
+  isLoggedIn: Boolean
+})
 </script>
 
 <template>

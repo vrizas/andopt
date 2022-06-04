@@ -1,83 +1,83 @@
 <script setup>
 import {
-  ref, onMounted, reactive, computed,
-} from 'vue';
+  ref, onMounted, reactive, computed
+} from 'vue'
 
-import { RouterView } from 'vue-router';
-import { gsap } from 'gsap';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import HeaderBar from './components/desktop/HeaderBar.vue';
-import FooterBar from './components/desktop/FooterBar.vue';
+import { RouterView } from 'vue-router'
+import { gsap } from 'gsap'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import HeaderBar from './components/desktop/HeaderBar.vue'
+import FooterBar from './components/desktop/FooterBar.vue'
 
-const loginPopup = ref(null);
-const registerPopup = ref(null);
-const isLoggedIn = ref(false);
-const username = ref('');
+const loginPopup = ref(null)
+const registerPopup = ref(null)
+const isLoggedIn = ref(false)
+const username = ref('')
 const currentHashLink = reactive({
-  hash: '#',
-});
+  hash: '#'
+})
 
-const auth = getAuth();
+const auth = getAuth()
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const { displayName } = user;
-    username.value = displayName;
-    isLoggedIn.value = true;
+    const { displayName } = user
+    username.value = displayName
+    isLoggedIn.value = true
   } else {
-    isLoggedIn.value = false;
+    isLoggedIn.value = false
   }
-});
+})
 
-function showLoginPopUpHandler() {
-  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' });
+function showLoginPopUpHandler () {
+  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
   setTimeout(() => {
-    currentHashLink.hash = '#login';
-    gsap.to(loginPopup.value, { duration: 0.3, y: '-50%', ease: 'power2' });
-  }, 300);
+    currentHashLink.hash = '#login'
+    gsap.to(loginPopup.value, { duration: 0.3, y: '-50%', ease: 'power2' })
+  }, 300)
 
-  history.replaceState(undefined, undefined, '#login');
+  history.replaceState(undefined, undefined, '#login')
 }
 
-function closeLoginPopUp() {
-  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' });
+function closeLoginPopUp () {
+  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
   setTimeout(() => {
-    currentHashLink.hash = '#';
-    history.replaceState(undefined, undefined, '#');
-  }, 300);
+    currentHashLink.hash = '#'
+    history.replaceState(undefined, undefined, '#')
+  }, 300)
 }
 
-function showRegisterPopUpHandler() {
-  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' });
+function showRegisterPopUpHandler () {
+  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
   setTimeout(() => {
-    currentHashLink.hash = '#register';
-    gsap.to(registerPopup.value, { duration: 0.3, y: '-50%', ease: 'power2' });
-  }, 300);
+    currentHashLink.hash = '#register'
+    gsap.to(registerPopup.value, { duration: 0.3, y: '-50%', ease: 'power2' })
+  }, 300)
 
-  history.replaceState(undefined, undefined, '#register');
+  history.replaceState(undefined, undefined, '#register')
 }
 
-function closeRegisterPopUp() {
-  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' });
+function closeRegisterPopUp () {
+  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
   setTimeout(() => {
-    currentHashLink.hash = '#';
-    history.replaceState(undefined, undefined, '#');
-  }, 300);
+    currentHashLink.hash = '#'
+    history.replaceState(undefined, undefined, '#')
+  }, 300)
 }
 
-const showLoginPopUp = computed(() => currentHashLink.hash === '#login');
+const showLoginPopUp = computed(() => currentHashLink.hash === '#login')
 
-const showRegisterPopUp = computed(() => currentHashLink.hash === '#register');
+const showRegisterPopUp = computed(() => currentHashLink.hash === '#register')
 
 onMounted(() => {
-  currentHashLink.hash = window.location.hash || '#';
+  currentHashLink.hash = window.location.hash || '#'
 
   if (currentHashLink.hash === '#login') {
-    showLoginPopUpHandler();
+    showLoginPopUpHandler()
   } else if (currentHashLink.hash === '#register') {
-    showRegisterPopUpHandler();
+    showRegisterPopUpHandler()
   }
-});
+})
 </script>
 
 <template>

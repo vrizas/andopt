@@ -1,21 +1,21 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { RouterLink } from 'vue-router';
-import LoginPopupVue from './LoginPopup.vue';
-import RegisterPopUpVue from './RegisterPopup.vue';
+import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import LoginPopupVue from './LoginPopup.vue'
+import RegisterPopUpVue from './RegisterPopup.vue'
 
 const routes = {
   '/login': LoginPopupVue,
-  '/register': RegisterPopUpVue,
-};
+  '/register': RegisterPopUpVue
+}
 
-const currentPath = ref(window.location.hash);
+const currentPath = ref(window.location.hash)
 
 window.addEventListener('hashchange', () => {
-  currentPath.value = window.location.hash;
-});
+  currentPath.value = window.location.hash
+})
 
-const currentView = computed(() => routes[currentPath.value.slice(1) || '/']);
+const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
 </script>
 
 <template>

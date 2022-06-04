@@ -1,48 +1,48 @@
 <script setup>
-import { gsap } from 'gsap';
-import { ref, onMounted } from 'vue';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { gsap } from 'gsap'
+import { ref, onMounted } from 'vue'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
-const email = ref('');
-const password = ref('');
-const passwordEl = ref(null);
-const loginPopup = ref(null);
-const auth = getAuth();
+const email = ref('')
+const password = ref('')
+const passwordEl = ref(null)
+const loginPopup = ref(null)
+const auth = getAuth()
 
 const closePopup = () => {
-  window.location.hash = '/';
-};
+  window.location.hash = '/'
+}
 
 const submitHandler = async (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
   if (!email.value || !password.value) {
-    alert('Mohon isi semua field');
+    alert('Mohon isi semua field')
   } else {
     signInWithEmailAndPassword(auth, email.value, password.value)
       .then((userCredential) => {
-        const { user } = userCredential;
-        closePopup();
+        const { user } = userCredential
+        closePopup()
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        const errorCode = error.code
+        const errorMessage = error.message
 
         if (errorCode === 'auth/user-not-found') {
-          alert('User not found');
+          alert('User not found')
         } else if (errorCode === 'auth/wrong-password') {
-          passwordEl.value.style.borderColor = '#EF144A';
-          gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' });
+          passwordEl.value.style.borderColor = '#EF144A'
+          gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' })
         } else {
-          alert(errorMessage);
+          alert(errorMessage)
         }
-      });
+      })
   }
-};
+}
 
 onMounted(() => {
-  gsap.to(loginPopup.value, { duration: 0.3, scale: 1, ease: 'power2' });
-});
+  gsap.to(loginPopup.value, { duration: 0.3, scale: 1, ease: 'power2' })
+})
 </script>
 
 <template>

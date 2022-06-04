@@ -1,23 +1,23 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
-import { getAuth, signOut } from 'firebase/auth';
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
+import { getAuth, signOut } from 'firebase/auth'
 
 defineProps({
-  username: String,
-});
+  username: String
+})
 
-const isMenuOpen = ref(false);
+const isMenuOpen = ref(false)
 
-const auth = getAuth();
+const auth = getAuth()
 
 const signOutHandler = () => {
   signOut(auth).then(() => {
     // Sign-out successful.
   }).catch((error) => {
-    // An error happened.
-  });
-};
+    alert(error.message)
+  })
+}
 </script>
 
 <template>
