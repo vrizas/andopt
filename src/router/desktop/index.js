@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../../views/desktop/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../../views/desktop/HomeView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/my',
@@ -15,7 +15,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
+      component: () => import('../../views/desktop/ProfileView.vue'),
     },
     {
       path: '/my/favorites',
@@ -23,7 +23,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
+      component: () => import('../../views/desktop/ProfileView.vue'),
     },
     {
       path: '/my/lastseen',
@@ -31,7 +31,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
+      component: () => import('../../views/desktop/ProfileView.vue'),
     },
     {
       path: '/my/upload',
@@ -39,9 +39,17 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
-    }
-  ]
-})
+      component: () => import('../../views/desktop/ProfileView.vue'),
+    },
+    {
+      path: '/pet/:id',
+      name: 'pet',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/desktop/PetView.vue'),
+    },
+  ],
+});
 
-export default router
+export default router;
