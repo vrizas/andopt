@@ -1,6 +1,4 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
