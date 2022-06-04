@@ -2,13 +2,13 @@
 defineProps({
   cities: {
     type: Array,
-    required: true,
+    required: true
   },
   clickHandler: {
     type: Function,
-    required: true,
-  },
-});
+    required: true
+  }
+})
 </script>
 
 <template>
