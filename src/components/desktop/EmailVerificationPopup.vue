@@ -3,7 +3,6 @@ import { gsap } from 'gsap'
 import { ref, onMounted } from 'vue'
 import { getAuth, signOut, sendEmailVerification } from 'firebase/auth'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 
 const router = useRouter()
 const emailVerificationPopup = ref(null)

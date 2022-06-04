@@ -62,7 +62,7 @@ onMounted(() => {
           <label for="email">Email</label>
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-            type="text"
+            type="email"
             v-model="email"
             id="email"
             required
@@ -80,7 +80,7 @@ onMounted(() => {
           />
         </div>
         <div class="w-full text-right my-3">
-          <button>Lupa password ?</button>
+          <a href="#/reset-password">Lupa password ?</a>
         </div>
         <div class="w-full text-center">
           <button
