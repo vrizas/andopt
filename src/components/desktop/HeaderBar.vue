@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import LoginPopupVue from './LoginPopup.vue'
 import RegisterPopupVue from './RegisterPopup.vue'
 import DropdownProfile from './DropdownProfile.vue'
+import ResetPasswordPopupVue from './ResetPasswordPopup.vue'
 
 defineProps({
   username: String,
@@ -12,7 +13,8 @@ defineProps({
 
 const routes = {
   '/login': LoginPopupVue,
-  '/register': RegisterPopupVue
+  '/register': RegisterPopupVue,
+  '/reset-password': ResetPasswordPopupVue
 }
 
 const currentPath = ref(window.location.hash)
@@ -22,6 +24,7 @@ window.addEventListener('hashchange', () => {
 })
 
 const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
+
 </script>
 
 <template>

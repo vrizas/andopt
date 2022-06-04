@@ -52,7 +52,7 @@ onMounted(() => {
     @click="closePopup"
   >
     <div
-      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2"
+      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 overflow-y-auto"
       ref="loginPopup"
       @click="(e) => e.stopPropagation()"
     >
@@ -62,7 +62,7 @@ onMounted(() => {
           <label for="email">Email</label>
           <input
             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-            type="text"
+            type="email"
             v-model="email"
             id="email"
             required
@@ -80,7 +80,7 @@ onMounted(() => {
           />
         </div>
         <div class="w-full text-right my-3">
-          <button>Lupa password ?</button>
+          <a href="#/reset-password">Lupa password ?</a>
         </div>
         <div class="w-full text-center">
           <button
