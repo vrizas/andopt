@@ -22,6 +22,7 @@ window.addEventListener('hashchange', () => {
 })
 
 const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
+
 </script>
 
 <template>

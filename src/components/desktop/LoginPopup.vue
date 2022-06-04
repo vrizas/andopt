@@ -52,7 +52,7 @@ onMounted(() => {
     @click="closePopup"
   >
     <div
-      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2"
+      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 overflow-y-auto"
       ref="loginPopup"
       @click="(e) => e.stopPropagation()"
     >

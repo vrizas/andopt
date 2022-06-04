@@ -2,17 +2,15 @@
 import { gsap } from 'gsap'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
+import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
 
 const registerPopup = ref(null)
-const username = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const passwordEl = ref(null)
 const confirmPasswordEl = ref(null)
-const router = useRouter()
 const auth = getAuth()
 
 const closePopup = () => {
@@ -22,7 +20,7 @@ const closePopup = () => {
 const submitHandler = async (e) => {
   e.preventDefault()
 
-  if (!username.value || !email.value || !password.value || !confirmPassword.value) {
+  if (!email.value || !password.value || !confirmPassword.value) {
     alert('Mohon isi semua field')
   } else {
     if (password.value !== confirmPassword.value) {
@@ -30,24 +28,39 @@ const submitHandler = async (e) => {
       confirmPasswordEl.value.style.borderColor = '#EF144A'
       gsap.from(passwordEl.value, { duration: 0.3, x: 10, ease: 'bounce' })
       gsap.from(confirmPasswordEl.value, { duration: 0.3, x: 10, ease: 'bounce' })
+      return
     }
 
     createUserWithEmailAndPassword(auth, email.value, password.value)
       .then((userCredential) => {
         const { user } = userCredential
-        updateProfile(auth.currentUser, {
-          displayName: username.value
-        }).then(() => {
-          // Profile updated!
-          // ...
-        }).catch((error) => {
-          alert(error.message)
+        axios.post('http://localhost:4000/user/register', {
+          uid: user.uid
         })
+        const randomName = uniqueNamesGenerator({
+          dictionaries: [animals, colors],
+          length: 2
+        }).replace('_', '')
+        updateProfile(auth.currentUser, {
+          displayName: randomName
+        }).catch(() => {
+          alert('Terjadi kesalahan')
+        })
+      }).then(() => {
+        sendEmailVerification(auth.currentUser, {
+          url: 'http://localhost:3000/'
+        })
+          .then(() => {
+            alert('Email verifikasi telah dikirim')
+          }).catch(() => {
+            alert('Terjadi kesalahan')
+          })
         closePopup()
       })
       .catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
+        alert(errorMessage)
       })
   }
 }
@@ -64,21 +77,12 @@ onMounted(() => {
     @click="closePopup"
   >
     <div
-      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 h-5/6 overflow-y-scroll"
+      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 h-5/6 overflow-y-auto"
       ref="registerPopup"
       @click="(e) => e.stopPropagation()"
     >
       <h2 class="text-primary text-xl font-semibold my-5">Daftar</h2>
       <form class="flex flex-col gap-3 text-sm" @submit.prevent="submitHandler">
-        <div class="flex flex-col gap-1">
-          <label for="username">Username</label>
-          <input
-            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-            type="text"
-            v-model="username"
-            id="username"
-          />
-        </div>
         <div class="flex flex-col gap-1">
           <label for="email">Email</label>
           <input
