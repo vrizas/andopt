@@ -40,7 +40,7 @@ onMounted(() => {
       <a href="#/" ref="closeBtn" class="absolute right-5 text-2xl">
         <font-awesome-icon icon="xmark" />
       </a>
-      <h2 class="text-primary text-2xl font-semibold my-5">Setel Ulang Password</h2>
+      <h2 class="text-primary text-xl font-semibold my-5">Setel Ulang Password</h2>
       <form class="flex flex-col gap-3" @submit.prevent="resetPasswordHandler">
         <input class="py-3 px-4 bg-white border-b-2 border-primary" type="email" v-model="email" id="email" placeholder="Masukkan email" required/>
         <div class="w-full text-center">

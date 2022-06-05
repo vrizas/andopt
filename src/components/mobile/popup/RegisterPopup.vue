@@ -81,7 +81,7 @@ onMounted(() => {
       <a href="#/" ref="closeBtn" class="absolute right-5 text-2xl">
         <font-awesome-icon icon="xmark" />
       </a>
-      <h2 class="text-primary text-2xl font-semibold my-5">Daftar</h2>
+      <h2 class="text-primary text-xl font-semibold my-5">Daftar</h2>
       <form class="flex flex-col gap-3" @submit.prevent="submitHandler">
         <div class="flex flex-col gap-1">
           <label for="email">Email</label>

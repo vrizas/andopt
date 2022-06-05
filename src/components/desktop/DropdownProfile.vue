@@ -27,7 +27,7 @@ const signOutHandler = () => {
 <template>
     <div class="relative" @mouseleave="isMenuOpen = false">
         <RouterLink to="/my" @mouseover="isMenuOpen = true">
-            <img :src="profilePicUrl || defaultProfilePic" alt="profil" width="30" class="rounded-full" draggable="false">
+            <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-6 h-6 rounded-full object-cover" draggable="false">
         </RouterLink>
         <transition
         enter-active-class="transition ease-out duration-100"
@@ -41,7 +41,7 @@ const signOutHandler = () => {
             <div class="w-48 bg-white rounded-md shadow-andopt">
                 <p class="flex justify-between py-2 px-3 text-sm mb-3">
                     <span class="flex gap-2 items-center font-semibold truncate">
-                        <img :src="profilePicUrl || defaultProfilePic" alt="profil" width="25" height="25" class="rounded-full" draggable="false">
+                        <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
                         {{ username }}
                     </span>
                     <RouterLink to="/my" class="text-darkGray">
