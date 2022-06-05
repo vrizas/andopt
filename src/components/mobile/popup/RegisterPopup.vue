@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
 import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
+import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
 
 const registerPopup = ref(null)
 const email = ref('')
@@ -11,11 +12,8 @@ const password = ref('')
 const confirmPassword = ref('')
 const passwordEl = ref(null)
 const confirmPasswordEl = ref(null)
+const closeBtn = ref(null)
 const auth = getAuth()
-
-const closePopup = () => {
-  window.location.hash = '/'
-}
 
 const submitHandler = async (e) => {
   e.preventDefault()
@@ -42,7 +40,8 @@ const submitHandler = async (e) => {
           length: 2
         }).replace('_', '')
         updateProfile(auth.currentUser, {
-          displayName: randomName
+          displayName: randomName,
+          photoURL: defaultProfilePic
         }).catch(() => {
           alert('Terjadi kesalahan')
         })
@@ -55,7 +54,7 @@ const submitHandler = async (e) => {
           }).catch(() => {
             alert('Terjadi kesalahan')
           })
-        closePopup()
+        closeBtn.value.click()
       })
       .catch((error) => {
         const errorCode = error.code
@@ -66,27 +65,28 @@ const submitHandler = async (e) => {
 }
 
 onMounted(() => {
-  gsap.to(registerPopup.value, { duration: 0.3, scale: 1, ease: 'power2' })
+  gsap.to(registerPopup.value, { duration: 0.3, y: 0, ease: 'power2' })
 })
 </script>
 
 <template>
   <section
-    class="fixed top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
+    class="absolute top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
     ref="registerPopupContainer"
-    @click="closePopup"
   >
     <div
-      class="bg-white py-8 px-10 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 h-5/6 overflow-y-auto"
+      class="w-full h-full bg-white translate-y-full py-4 px-5 absolute top-0 left-0 overflow-y-auto"
       ref="registerPopup"
-      @click="(e) => e.stopPropagation()"
     >
+      <a href="#/" ref="closeBtn" class="absolute right-5 text-2xl">
+        <font-awesome-icon icon="xmark" />
+      </a>
       <h2 class="text-primary text-xl font-semibold my-5">Daftar</h2>
-      <form class="flex flex-col gap-3 text-sm" @submit.prevent="submitHandler">
+      <form class="flex flex-col gap-3" @submit.prevent="submitHandler">
         <div class="flex flex-col gap-1">
           <label for="email">Email</label>
           <input
-            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            class="py-3 px-4 bg-white border-b-2 border-primary"
             type="email"
             v-model="email"
             id="email"
@@ -96,7 +96,7 @@ onMounted(() => {
         <div class="flex flex-col gap-1">
           <label for="password">Password</label>
           <input
-            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            class="py-3 px-4 bg-white border-b-2 border-primary"
             type="password"
             v-model="password"
             ref="passwordEl"
@@ -107,7 +107,7 @@ onMounted(() => {
         <div class="flex flex-col gap-1">
           <label for="confirmPassword">Konfirmasi Password</label>
           <input
-            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            class="py-3 px-4 bg-white border-b-2 border-primary"
             type="password"
             v-model="confirmPassword"
             ref="confirmPasswordEl"
@@ -117,18 +117,16 @@ onMounted(() => {
         </div>
         <div class="w-full text-center">
           <button
-            class="bg-primary text-white px-4 py-3 w-1/3 rounded-md font-semibold mt-12"
+            class="bg-primary text-white px-4 py-2 w-1/3 rounded-md font-semibold mt-12"
           >
             Daftar
           </button>
         </div>
       </form>
-      <p class="mt-8 text-center text-sm">
+      <p class="mt-8 text-center">
         Sudah punya akun ?
         <a href="#/login" class="text-primary"> Masuk sekarang </a>
       </p>
     </div>
   </section>
 </template>
-
-<style scoped></style>

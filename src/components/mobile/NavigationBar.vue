@@ -1,12 +1,18 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import LoginPopupVue from './LoginPopup.vue'
-import RegisterPopUpVue from './RegisterPopup.vue'
+import LoginPopupVue from './popup/LoginPopup.vue'
+import RegisterPopUpVue from './popup/RegisterPopup.vue'
+import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
+
+defineProps({
+  isLoggedIn: Boolean
+})
 
 const routes = {
   '/login': LoginPopupVue,
-  '/register': RegisterPopUpVue
+  '/register': RegisterPopUpVue,
+  '/reset-password': ResetPasswordPopupVue
 }
 
 const currentPath = ref(window.location.hash)
@@ -20,15 +26,13 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
 
 <template>
   <div>
-    <nav
-      class="flex justify-between w-full fixed bottom-0 left-0 right-0 bg-white text-2xl shadow-andopt text-darkGray max-w-[600px] m-auto"
-    >
+    <nav class="flex justify-between w-full fixed bottom-0 left-0 right-0 bg-white text-xl shadow-andopt text-darkGray max-w-[600px] m-auto">
       <RouterLink
         to="/"
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
         :class="{ active: $route.name === 'home' }"
       >
-        <ion-icon name="home"></ion-icon>
+        <font-awesome-icon icon="house" />
         <span class="text-sm">Beranda</span>
       </RouterLink>
       <RouterLink
@@ -36,7 +40,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
         :class="{ active: $route.name === 'post' }"
       >
-        <ion-icon name="add-circle"></ion-icon>
+        <font-awesome-icon icon="circle-plus" />
         <span class="text-sm">Unggah</span>
       </RouterLink>
       <RouterLink
@@ -44,15 +48,25 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
         :class="{ active: $route.name === 'favorite' }"
       >
-        <ion-icon name="heart"></ion-icon>
+        <font-awesome-icon icon="heart" />
         <span class="text-sm">Favorit</span>
+      </RouterLink>
+      <RouterLink
+        to="/my"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        :class="{ active: $route.name === 'profile' }"
+        v-if="isLoggedIn"
+      >
+        <font-awesome-icon icon="user" />
+        <span class="text-sm">Profil</span>
       </RouterLink>
       <a
         href="#/login"
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        v-else
       >
-        <ion-icon name="person"></ion-icon>
-        <span class="text-sm">Profile</span>
+        <font-awesome-icon icon="user" />
+        <span class="text-sm">Profil</span>
       </a>
       <div class="indicator"></div>
     </nav>

@@ -36,7 +36,7 @@ onMounted(() => {
 <template>
   <section
     class="fixed top-0 left-0 z-[999] w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
-    ref="loginPopupContainer"
+    ref="emailVerificationPopupContainer"
   >
     <div
       class="bg-white py-8 px-20 rounded-xl absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] scale-0 w-1/2 overflow-y-auto text-center"

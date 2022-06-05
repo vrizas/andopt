@@ -1,13 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import LoginPopupVue from './LoginPopup.vue'
-import RegisterPopupVue from './RegisterPopup.vue'
+import LoginPopupVue from './popup/LoginPopup.vue'
+import RegisterPopupVue from './popup/RegisterPopup.vue'
 import DropdownProfile from './DropdownProfile.vue'
-import ResetPasswordPopupVue from './ResetPasswordPopup.vue'
+import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
 
 defineProps({
-  username: String,
   isLoggedIn: Boolean
 })
 
@@ -43,7 +42,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <RouterLink to="/" class="text-xl text-white">
           <font-awesome-icon icon="comment-dots" />
         </RouterLink>
-        <DropdownProfile :username="username" />
+        <DropdownProfile />
       </nav>
     </header>
     <header

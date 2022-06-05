@@ -5,12 +5,34 @@ import {
 
 import { RouterView } from 'vue-router'
 import { gsap } from 'gsap'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import NavigationBar from './components/mobile/NavigationBar.vue'
+import EmailVerificationPopup from './components/mobile/popup/EmailVerificationPopup.vue'
 
 const loginPopup = ref(null)
 const registerPopup = ref(null)
+const isLoggedIn = ref(false)
+const isEmailVerified = ref(null)
+const username = ref('')
+const email = ref('')
+const profilePicUrl = ref('')
 const currentHashLink = reactive({
   hash: '#'
+})
+
+const auth = getAuth()
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const { emailVerified } = user
+    isLoggedIn.value = true
+    isEmailVerified.value = emailVerified
+    username.value = user.displayName
+    email.value = user.email
+    profilePicUrl.value = user.photoURL
+  } else {
+    isLoggedIn.value = false
+  }
 })
 
 function showLoginPopUpHandler () {
@@ -67,8 +89,9 @@ onMounted(() => {
 <template>
   <div class="bg-lightGray">
     <div class="mobile-container">
-      <NavigationBar />
-      <RouterView />
+      <NavigationBar :isLoggedIn="isLoggedIn" />
+      <RouterView :username="username" :email="email" :profilePicUrl="profilePicUrl" />
+      <EmailVerificationPopup v-if="isEmailVerified === false" />
     </div>
   </div>
 </template>

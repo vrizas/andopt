@@ -2,14 +2,18 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { getAuth, signOut } from 'firebase/auth'
-
-defineProps({
-  username: String
-})
+import defaultProfilePic from '../../assets/images/default-profile-pic.png'
 
 const isMenuOpen = ref(false)
 const router = useRouter()
 const auth = getAuth()
+const user = auth.currentUser
+const username = ref('')
+const profilePicUrl = ref('')
+if (user) {
+  username.value = user.displayName
+  profilePicUrl.value = user.photoURL
+}
 
 const signOutHandler = () => {
   signOut(auth).then(() => {
@@ -23,7 +27,7 @@ const signOutHandler = () => {
 <template>
     <div class="relative" @mouseleave="isMenuOpen = false">
         <RouterLink to="/my" @mouseover="isMenuOpen = true">
-            <img src="../../assets/images/cat.jpg" alt="" width="30" class="rounded-full" draggable="false">
+            <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-6 h-6 rounded-full object-cover" draggable="false">
         </RouterLink>
         <transition
         enter-active-class="transition ease-out duration-100"
@@ -37,8 +41,8 @@ const signOutHandler = () => {
             <div class="w-48 bg-white rounded-md shadow-andopt">
                 <p class="flex justify-between py-2 px-3 text-sm mb-3">
                     <span class="flex gap-2 items-center font-semibold truncate">
-                        <img src="../../assets/images/cat.jpg" alt="profil" width="25" class="rounded-full" draggable="false">
-                        {{username}}
+                        <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
+                        {{ username }}
                     </span>
                     <RouterLink to="/my" class="text-darkGray">
                         <font-awesome-icon icon="gear" />
