@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
 import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
+import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
 
 const registerPopup = ref(null)
 const email = ref('')
@@ -42,7 +43,8 @@ const submitHandler = async (e) => {
           length: 2
         }).replace('_', '')
         updateProfile(auth.currentUser, {
-          displayName: randomName
+          displayName: randomName,
+          photoURL: defaultProfilePic
         }).catch(() => {
           alert('Terjadi kesalahan')
         })

@@ -8,13 +8,12 @@ import { gsap } from 'gsap'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import HeaderBar from './components/desktop/HeaderBar.vue'
 import FooterBar from './components/desktop/FooterBar.vue'
-import EmailVerificationPopup from './components/desktop/EmailVerificationPopup.vue'
+import EmailVerificationPopup from './components/desktop/popup/EmailVerificationPopup.vue'
 
 const loginPopup = ref(null)
 const registerPopup = ref(null)
 const isLoggedIn = ref(false)
 const isEmailVerified = ref(null)
-const username = ref('')
 const currentHashLink = reactive({
   hash: '#'
 })
@@ -23,9 +22,8 @@ const auth = getAuth()
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const { displayName, emailVerified } = user
+    const { emailVerified } = user
     isLoggedIn.value = true
-    username.value = displayName
     isEmailVerified.value = emailVerified
   } else {
     isLoggedIn.value = false
@@ -85,7 +83,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" :username="username" />
+    <HeaderBar :isLoggedIn="isLoggedIn" />
     <RouterView />
     <FooterBar :isLoggedIn="isLoggedIn" />
     <EmailVerificationPopup v-if="isEmailVerified === false" />
