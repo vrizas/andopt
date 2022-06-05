@@ -14,6 +14,9 @@ const loginPopup = ref(null)
 const registerPopup = ref(null)
 const isLoggedIn = ref(false)
 const isEmailVerified = ref(null)
+const username = ref('')
+const email = ref('')
+const profilePicUrl = ref('')
 const currentHashLink = reactive({
   hash: '#'
 })
@@ -25,6 +28,9 @@ onAuthStateChanged(auth, (user) => {
     const { emailVerified } = user
     isLoggedIn.value = true
     isEmailVerified.value = emailVerified
+    username.value = user.displayName
+    email.value = user.email
+    profilePicUrl.value = user.photoURL
   } else {
     isLoggedIn.value = false
   }
@@ -84,7 +90,7 @@ onMounted(() => {
 <template>
   <div>
     <HeaderBar :isLoggedIn="isLoggedIn" />
-    <RouterView />
+    <RouterView :username="username" :email="email" :profilePicUrl="profilePicUrl" />
     <FooterBar :isLoggedIn="isLoggedIn" />
     <EmailVerificationPopup v-if="isEmailVerified === false" />
   </div>

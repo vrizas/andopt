@@ -1,8 +1,7 @@
 <script setup>
 import {
-  ref, onMounted, reactive, computed
+  ref, computed
 } from 'vue'
-import gsap from 'gsap'
 import { getAuth, signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 import defaultProfilePic from '../../assets/images/default-profile-pic.png'

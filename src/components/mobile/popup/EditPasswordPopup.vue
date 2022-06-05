@@ -9,7 +9,6 @@ const confirmNewPassword = ref('')
 const newPasswordEl = ref(null)
 const confirmNewPasswordEl = ref(null)
 
-console.log(newPassword)
 const auth = getAuth()
 const user = auth.currentUser
 
