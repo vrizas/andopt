@@ -117,7 +117,7 @@ onMounted(() => {
         </div>
         <div class="w-full text-center">
           <button
-            class="bg-primary text-white px-4 py-3 w-1/3 rounded-md font-semibold mt-12"
+            class="bg-primary text-white px-4 py-2 w-1/3 rounded-md font-semibold mt-12"
           >
             Daftar
           </button>

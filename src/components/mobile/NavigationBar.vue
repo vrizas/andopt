@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import LoginPopupVue from './popup/LoginPopup.vue'
 import RegisterPopUpVue from './popup/RegisterPopup.vue'
+import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
 
 defineProps({
   isLoggedIn: Boolean
@@ -10,7 +11,8 @@ defineProps({
 
 const routes = {
   '/login': LoginPopupVue,
-  '/register': RegisterPopUpVue
+  '/register': RegisterPopUpVue,
+  '/reset-password': ResetPasswordPopupVue
 }
 
 const currentPath = ref(window.location.hash)
