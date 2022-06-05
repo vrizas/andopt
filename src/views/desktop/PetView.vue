@@ -1,10 +1,47 @@
 <script setup>
+import { ref } from 'vue'
+
+const tabImages = ref(null)
+
+const scrollAmount = ref(0)
+const scrollMin = ref(0)
+
+const scrollRightHandler = () => {
+  tabImages.value.scrollTo({
+    top: 0,
+    left: Math.max(scrollAmount.value += 500, tabImages.value.clientWidth),
+    behavior: 'smooth'
+  })
+}
+
+const scrollLeftHandler = () => {
+  tabImages.value.scrollTo({
+    top: 0,
+    left: Math.min(scrollAmount.value -= 500, scrollMin.value),
+    behavior: 'smooth'
+  })
+}
 </script>
 
 <template>
   <main class="py-8 px-10 flex gap-10 bg-white min-h-[70vh]">
-    <section>
+    <section class="relative flex flex-col gap-5 items-center">
       <img src="../../assets/images/cat.jpg" alt="cat" class="w-72 h-72 object-cover rounded-lg">
+      <div class="relative">
+        <div class="flex gap-4 overflow-x-auto w-60 px-2 tab-images" ref="tabImages">
+          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer active">
+          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
+          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
+          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
+        </div>
+        <button class="absolute right-[-20px] top-1/2 translate-y-[-50%] bg-lightGray w-8 h-8 rounded-full flex items-center justify-center" @click="scrollRightHandler">
+          <font-awesome-icon icon="chevron-right" />
+        </button>
+        <button class="absolute left-[-20px] top-1/2 translate-y-[-50%] bg-lightGray w-8 h-8 rounded-full flex items-center justify-center" @click="scrollLeftHandler">
+          <font-awesome-icon icon="chevron-left" />
+        </button>
+      </div>
+
     </section>
     <section class="w-1/2">
       <h2 class="font-bold text-xl">
@@ -49,3 +86,19 @@
     </aside>
   </main>
 </template>
+
+<style scoped>
+  .tab-images .active {
+    border: 4px solid #E06B2D;
+    transition: .5s;
+  }
+
+  .tab-images::-webkit-scrollbar {
+      display: none;
+  }
+
+  .tab-images {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+  }
+</style>
