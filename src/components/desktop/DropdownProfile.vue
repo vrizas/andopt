@@ -48,6 +48,12 @@ const signOutHandler = () => {
                         <font-awesome-icon icon="gear" />
                     </RouterLink>
                 </p>
+                <RouterLink to="/my/pet/add" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
+                        <font-awesome-icon icon="plus" />
+                    </span>
+                    Unggah Peliharaan
+                </RouterLink>
                 <RouterLink to="/my/favorite" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
                     <span class="w-6 h-6 rounded-full bg-pink text-white flex items-center justify-center text-xs">
                         <font-awesome-icon icon="heart"/>
