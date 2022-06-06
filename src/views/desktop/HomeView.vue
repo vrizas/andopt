@@ -1,12 +1,25 @@
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 import cities from '../../utils/cities'
 
 const cityInput = ref('')
-const autoCompleteList = ref(null)
 const autoCompleteListVisible = ref(false)
 const filteredCities = ref([])
+const pets = ref([])
+const petGenders = ref([])
+
+axios.get('http://localhost:4000/pets').then(res => {
+  pets.value = res.data.pets
+  res.data.pets.forEach(pet => {
+    if (pet.gender === 'Jantan') {
+      petGenders.value.push('mars')
+    } else if (pet.gender === 'Betina') {
+      petGenders.value.push('venus')
+    }
+  })
+})
 
 const autoCompleteHandler = (e) => {
   const userData = e.target.value
@@ -26,12 +39,12 @@ const useAutocomplete = (e) => {
 </script>
 
 <template>
-  <main>
+  <main class="bg-white">
     <section class="relative h-[40vh] text-white">
       <img
         src="../../assets/images/hero.jpg"
         alt=""
-        class="h-full w-full object-cover"
+        class="fixed h-[40vh] w-full object-cover"
         draggable="false"
       />
       <div class="absolute top-0 left-0 h-full w-full bg-darkFilter"></div>
@@ -77,7 +90,7 @@ const useAutocomplete = (e) => {
         </form>
       </div>
     </section>
-    <section class="pt-6 px-10">
+    <section class="relative bg-white pt-6 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">
         Peliharaan Berdasarkan Kategori
       </h3>
@@ -136,39 +149,39 @@ const useAutocomplete = (e) => {
         </a>
       </div>
     </section>
-    <section class="pt-10 px-10">
+    <section class="relative bg-white pt-10 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">
         Yang Mungkin Anda Suka
       </h3>
       <div class="grid grid-cols-6 gap-5">
-        <a href="#" class="h-72 rounded-lg shadow-andopt">
+        <a :href="'pet/'+pet.id" class="h-72 rounded-lg shadow-andopt" :id="pet.id" v-for="(pet, index) in pets" :key="pet.id">
           <div class="h-3/6">
             <img
-              src="../../assets/images/cat.jpg"
-              alt="kucing silver"
+              :src="pet.imageUrls[0]"
+              :alt="pet.name"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"
             />
           </div>
           <div class="py-3 px-4 h-3/6">
             <h4 class="font-semibold truncate">
-              <font-awesome-icon icon="mars" class="text-darkGray text-2xl" />
-              Ardi
+              <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl" />
+              {{ pet.name }}
             </h4>
-            <p class="text-sm">Kucing Persia</p>
-            <p class="text-sm font-medium text-darkGray">2 tahun</p>
+            <p class="text-sm">{{ pet.type.name }} {{pet.type.race}}</p>
+            <p class="text-sm font-medium text-darkGray">{{ pet.age }}</p>
             <p class="text-sm mt-3">
               <font-awesome-icon
                 icon="location-dot"
                 class="text-primary mr-1"
               />
-              Jakarta
+              {{ pet.location.split(',')[0] }}
             </p>
           </div>
         </a>
       </div>
     </section>
-    <section class="pt-10 px-10">
+    <section class="relative bg-white pt-10 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">Artikel Terbaru</h3>
       <div class="grid grid-cols-3 gap-5">
         <div class="h-[450px] rounded-lg shadow-andopt">

@@ -1,16 +1,11 @@
 <script setup>
 import { gsap } from 'gsap'
 import { ref, computed } from 'vue'
+import axios from 'axios'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
-import { getAuth, signOut, updateProfile, updatePassword } from 'firebase/auth'
+import { getAuth, signOut, updateProfile, updatePassword, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import defaultProfilePic from '../../assets/images/default-profile-pic.png'
-
-defineProps({
-  username: String,
-  email: String,
-  profilePicUrl: String
-})
 
 const usernameIn = ref('')
 const newProfilePic = ref(null)
@@ -25,19 +20,24 @@ const confirmNewPasswordEl = ref(null)
 
 const router = useRouter()
 const auth = getAuth()
-const user = auth.currentUser
+const user = ref(null)
 
-if (user) {
-  currentUsername.value = user.displayName
-  currentEmail.value = user.email
-  currentProfilePicUrl.value = user.photoURL
-}
+onAuthStateChanged(auth, (account) => {
+  if (account) {
+    currentUsername.value = account.displayName
+    currentEmail.value = account.email
+    currentProfilePicUrl.value = account.photoURL
+    user.value = account
+  } else {
+    router.push('/#/login')
+  }
+})
 
 const onFileChange = (e) => {
   const file = e.target.files[0]
   if (!file) return
   newProfilePic.value = file
-  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}(temp)`)
+  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}(temp)`)
   const uploadTask = uploadBytesResumable(storageImageRef, file)
 
   uploadTask.on('state_changed',
@@ -57,37 +57,70 @@ const onFileChange = (e) => {
 }
 
 const updateProfileHandler = () => {
-  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}`)
-  const uploadTask = uploadBytesResumable(storageImageRef, newProfilePic.value)
+  if (newProfilePic.value) {
+    const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}`)
+    const uploadTask = uploadBytesResumable(storageImageRef, newProfilePic.value)
 
-  uploadTask.on('state_changed',
-    (snapshot) => {
-      const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-      console.log('Upload is ' + progress + '% done')
-    },
-    (error) => {
-      alert(error)
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        updateProfile(auth.currentUser, {
-          displayName: usernameIn.value || currentUsername.value,
-          photoURL: downloadURL
-        }).then(() => {
-          currentUsername.value = usernameIn.value || currentUsername.value
-          currentProfilePicUrl.value = downloadURL
-          const desertRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}(temp)`)
-          deleteObject(desertRef).then(() => {
-            alert('Data profil berhasil diperbarui')
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        console.log('Upload is ' + progress + '% done')
+      },
+      (error) => {
+        alert(error)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          updateProfile(auth.currentUser, {
+            displayName: usernameIn.value || currentUsername.value,
+            photoURL: downloadURL
+          }).then(() => {
+            user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+              axios.post(`http://localhost:4000/user/${user.value.uid}/update`, {
+                username: usernameIn.value || currentUsername.value,
+                photoURL: downloadURL
+              }, {
+                headers: {
+                  'X-Firebase-Token': idToken
+                }
+              })
+            }).catch(function (error) {
+              alert(error.message)
+            })
+
+            currentUsername.value = usernameIn.value || currentUsername.value
+            currentProfilePicUrl.value = downloadURL
+            const desertRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}(temp)`)
+            deleteObject(desertRef).then(() => {
+              alert('Data profil berhasil diperbarui')
+            }).catch((error) => {
+              alert(error.message)
+            })
           }).catch((error) => {
             alert(error.message)
           })
-        }).catch((error) => {
-          alert(error.message)
         })
+      }
+    )
+  } else {
+    updateProfile(auth.currentUser, {
+      displayName: usernameIn.value || currentUsername.value
+    }).then(() => {
+      user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+        axios.post(`http://localhost:4000/user/${user.value.uid}/update`, {
+          username: usernameIn.value || currentUsername.value,
+          photoURL: user.value.photoURL
+        }, {
+          headers: {
+            'X-Firebase-Token': idToken
+          }
+        })
+        alert('Data profil berhasil diperbarui')
+      }).catch(function (error) {
+        alert(error.message)
       })
-    }
-  )
+    })
+  }
 }
 
 const changePasswordHandler = () => {
@@ -131,7 +164,7 @@ const signOutHandler = () => {
             class="w-8 h-8 rounded-full bg-pink text-white flex items-center justify-center text-sm"
             ><font-awesome-icon icon="heart"
           /></span>
-          <span>Favorite</span>
+          <span>Favorit Saya</span>
         </RouterLink>
         <RouterLink to="/my/lastseen" class="flex items-center gap-3">
           <span
@@ -139,7 +172,7 @@ const signOutHandler = () => {
           >
             <font-awesome-icon icon="clock" />
           </span>
-          <span>Last Seen</span>
+          <span>Terakhir Dilihat</span>
         </RouterLink>
         <RouterLink to="/my/upload" class="flex items-center gap-3">
           <span
@@ -147,7 +180,7 @@ const signOutHandler = () => {
           >
             <font-awesome-icon icon="paw" />
           </span>
-          <span>Upload</span>
+          <span>Unggahan Saya</span>
         </RouterLink>
         <RouterLink to="/my" class="flex items-center gap-3">
           <span
@@ -155,7 +188,7 @@ const signOutHandler = () => {
           >
             <font-awesome-icon icon="user-gear" />
           </span>
-          <span>Settings</span>
+          <span>Pengaturan</span>
         </RouterLink>
         <div class="text-left">
           <button class="text-pink border-2 border-pink rounded-md py-1 px-8 font-semibold mt-10 active:bg-pink active:text-white hover:bg-pink hover:text-white" @click="signOutHandler">
@@ -169,7 +202,7 @@ const signOutHandler = () => {
         <h2 class="text-primary text-lg font-semibold mb-8">Edit Profile</h2>
         <div class="flex gap-12 ml-6">
           <div class="relative w-fit h-fit">
-            <img :src="currentProfilePicUrl || profilePicUrl || defaultProfilePic" alt="profil" class="w-48 h-48 rounded-full object-cover" draggable="false">
+            <img :src="currentProfilePicUrl || defaultProfilePic" alt="profil" class="w-48 h-48 rounded-full object-cover" draggable="false">
             <label for="profilePic" class="absolute bottom-0 right-0 w-10 h-10 bg-[#cccccc] rounded-full flex items-center justify-center text-lg border-white border-4">
               <input type="file" id="profilePic" class="hidden" @change="onFileChange">
               <font-awesome-icon icon="camera" />
@@ -182,7 +215,7 @@ const signOutHandler = () => {
                 class="py-3 px-4 border-b-2 border-primary"
                 type="text"
                 id="username"
-                :value="currentUsername || username"
+                :value="currentUsername"
                 @input="usernameIn = $event.target.value"
               />
             </div>
@@ -192,7 +225,7 @@ const signOutHandler = () => {
                 class="py-3 px-4 border-b-2 border-primary"
                 type="email"
                 id="email"
-                :value="currentEmail || email"
+                :value="currentEmail"
                 disabled
               />
             </div>

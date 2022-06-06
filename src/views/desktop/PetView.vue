@@ -1,10 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const tabImages = ref(null)
-
+const activeTabImage = ref(0)
 const scrollAmount = ref(0)
 const scrollMin = ref(0)
+const pet = ref(null)
+const petGender = ref('')
+const writerUsername = ref('')
+
+axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
+  pet.value = res.data.pet
+  if (res.data.pet.gender === 'Jantan') {
+    petGender.value = 'mars'
+  } else if (res.data.pet.gender === 'Betina') {
+    petGender.value = 'venus'
+  }
+
+  axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(res => {
+    writerUsername.value = res.data.user.username
+  })
+})
 
 const scrollRightHandler = () => {
   tabImages.value.scrollTo({
@@ -24,15 +43,12 @@ const scrollLeftHandler = () => {
 </script>
 
 <template>
-  <main class="py-8 px-10 flex gap-10 bg-white min-h-[70vh]">
+  <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]">
     <section class="relative flex flex-col gap-5 items-center">
-      <img src="../../assets/images/cat.jpg" alt="cat" class="w-72 h-72 object-cover rounded-lg">
-      <div class="relative">
+      <img :src="pet.imageUrls[activeTabImage]" alt="cat" class="w-72 h-72 object-cover rounded-lg">
+      <div class="relative" v-if="pet.imageUrls.length > 1">
         <div class="flex gap-4 overflow-x-auto w-60 px-2 tab-images" ref="tabImages">
-          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer active">
-          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
-          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
-          <img src="../../assets/images/cat.jpg" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer">
+          <img :src="url" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
         </div>
         <button class="absolute right-[-20px] top-1/2 translate-y-[-50%] bg-lightGray w-8 h-8 rounded-full flex items-center justify-center" @click="scrollRightHandler">
           <font-awesome-icon icon="chevron-right" />
@@ -41,32 +57,31 @@ const scrollLeftHandler = () => {
           <font-awesome-icon icon="chevron-left" />
         </button>
       </div>
-
     </section>
     <section class="w-1/2">
       <h2 class="font-bold text-xl">
-        Ardi
-        <font-awesome-icon icon="mars" class="text-darkGray text-2xl ml-3" />
+        {{ pet.name }}
+        <font-awesome-icon :icon="petGender" class="text-darkGray text-2xl ml-3" />
       </h2>
-      <p class="mt-2">Kucing Persia</p>
-      <p class="font-medium text-darkGray mt-1">2 tahun</p>
+      <p class="mt-2">{{ pet.type.name }} {{pet.type.race}}</p>
+      <p class="font-medium text-darkGray mt-1">{{ pet.age }}</p>
       <p class="mt-3">
         <font-awesome-icon
           icon="location-dot"
           class="text-primary mr-1"
         />
-        Jakarta
+        {{ pet.location }}
       </p>
       <div class="mt-8">
         <h3 class="font-medium text-lg text-darkGray mb-2">Deskripsi</h3>
-        <p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati porro officiis illo cupiditate fuga tempora amet eum, officia, natus adipisci ratione. Amet sint velit nesciunt itaque enim qui quasi non fugit. Accusamus blanditiis quas exercitationem eaque, quam quidem, cupiditate perferendis autem quaerat vel architecto ut suscipit delectus consectetur molestiae incidunt!</p>
+        <p class="text-sm">{{ pet.desc }}</p>
       </div>
     </section>
     <aside class="shadow-andopt w-1/4 py-8 px-6 rounded-lg h-fit">
       <h4 class="text-xs text-medium text-darkGray mb-2">Pemilik</h4>
       <a href="#" class="flex gap-2 items-center font-semibold truncate">
           <img src="../../assets/images/default-profile-pic.png" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
-          vrizas
+          {{ writerUsername }}
       </a>
       <hr class="my-4 text-lightGray">
       <div class="flex flex-col gap-3">
@@ -89,8 +104,7 @@ const scrollLeftHandler = () => {
 
 <style scoped>
   .tab-images .active {
-    border: 4px solid #E06B2D;
-    transition: .5s;
+    border: 4px solid #2F957F;
   }
 
   .tab-images::-webkit-scrollbar {

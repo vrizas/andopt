@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import DropdownList from '../../components/desktop/DropdownList.vue'
 import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 import axios from 'axios'
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { nanoid } from 'nanoid'
 import cities from '../../utils/cities'
@@ -13,7 +13,7 @@ const petName = ref('')
 const petType = ref('')
 const petRace = ref('')
 const petAgeNumber = ref(0)
-const petAgeUnit = ref('Tahun')
+const petAgeUnit = ref('tahun')
 const petGender = ref('Jantan')
 const petLoc = ref('')
 const petDesc = ref('')
@@ -29,9 +29,9 @@ const openDropdownPetGender = ref(false)
 const autoCompleteListVisible = ref(false)
 
 const ageUnits = ref([
-  'Tahun',
-  'Bulan',
-  'Hari'
+  'tahun',
+  'bulan',
+  'hari'
 ])
 
 const petGenders = ref([
@@ -43,15 +43,22 @@ const petGenders = ref([
 const router = useRouter()
 const storage = getStorage()
 const auth = getAuth()
-const user = auth.currentUser
+const user = ref(null)
+onAuthStateChanged(auth, (account) => {
+  if (account) {
+    user.value = account
+  } else {
+    user.value = null
+  }
+})
 
 const uploadImageAsPromise = (file, isTemp = true) => {
   return new Promise((resolve, reject) => {
     let storageImageRef = null
     if (isTemp) {
-      storageImageRef = storageRef(storage, `images/pets/pet-${user.uid}-${petsLength.value}(temp)`)
+      storageImageRef = storageRef(storage, `images/pets/pet-${user.value.uid}-${petsLength.value}(temp)`)
     } else {
-      storageImageRef = storageRef(storage, `images/pets/pet-${user.uid}/${petId.value}/${petsLength.value}`)
+      storageImageRef = storageRef(storage, `images/pets/pet-${user.value.uid}/${petId.value}/${petsLength.value}`)
     }
 
     const uploadTask = uploadBytesResumable(storageImageRef, file)
@@ -79,11 +86,9 @@ const uploadImageAsPromise = (file, isTemp = true) => {
 
 const deleteImageAsPromise = (petPhotoId) => {
   return new Promise((resolve, reject) => {
-    flashMessage.value = 'Proses sedang berlangsung...'
-    const storageImageRef = storageRef(storage, `images/pets/pet-${user.uid}-${petPhotoId}(temp)`)
+    const storageImageRef = storageRef(storage, `images/pets/pet-${user.value.uid}-${petPhotoId}(temp)`)
     deleteObject(storageImageRef).then(() => {
       resolve()
-      flashMessage.value = ''
     }).catch((error) => {
       reject(error)
     })
@@ -134,6 +139,12 @@ const useAutocomplete = (e) => {
 }
 
 const submitHandler = async () => {
+  if (petName.value && petType.value && petRace.value && petGender.value && petLoc.value && petDesc.value) {
+    flashMessage.value = 'Proses sedang berlangsung...'
+  } else {
+    alert('Data tidak lengkap')
+  }
+
   petId.value = nanoid(16)
   petsLength.value = 0
   for (let i = 0; i < newPetPhotos.value.length; i++) {
@@ -147,7 +158,7 @@ const submitHandler = async () => {
     await deleteImageAsPromise(petPhotoId)
   }
 
-  user.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
     const config = {
       headers: {
         'X-Firebase-Token': idToken
@@ -168,7 +179,8 @@ const submitHandler = async () => {
       desc: petDesc.value
     }
 
-    await axios.post(`http://localhost:4000/user/${user.uid}/pet`, pet, config)
+    await axios.post(`http://localhost:4000/user/${user.value.uid}/pet`, pet, config)
+    flashMessage.value = ''
     router.push('/my/pets')
   }).catch(function (error) {
     alert(error.message)
@@ -258,8 +270,8 @@ const submitHandler = async () => {
           </div>
         </div>
         <div class="flex flex-col gap-1">
-          <label for="petDesc">Deskripsi Hewan</label>
-          <textarea id="petDesc" cols="30" rows="5" class="py-3 px-4 bg-white border-b-2 border-primary text-sm" v-model="petDesc"></textarea>
+          <label for="petDesc">Deskripsi Hewan <span class="text-pink">*</span></label>
+          <textarea id="petDesc" cols="30" rows="5" class="py-3 px-4 bg-white border-b-2 border-primary text-sm" v-model="petDesc" required></textarea>
         </div>
         <div class="flex gap-3 mt-5">
           <button class="py-2 px-8 bg-primary text-white text-sm rounded-md" @click.prevent="submitHandler">Unggah</button>
