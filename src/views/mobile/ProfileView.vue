@@ -12,12 +12,15 @@ import HeaderBar from '../../components/mobile/HeaderBar.vue'
 const router = useRouter()
 const auth = getAuth()
 const user = ref(null)
+const isLoggedIn = ref(false)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
+    isLoggedIn.value = true
   } else {
     user.value = null
+    isLoggedIn.value = false
   }
 })
 
@@ -45,7 +48,7 @@ const signOutHandler = () => {
 
 <template>
   <div>
-    <HeaderBar />
+    <HeaderBar :isLoggedIn="isLoggedIn" />
     <main class="pt-6 pb-24 px-4">
       <section class="flex items-center gap-4 relative">
         <img :src="user.photoURL || defaultProfilePic" alt="profil" class="w-20 h-20 rounded-full object-cover" draggable="false">
