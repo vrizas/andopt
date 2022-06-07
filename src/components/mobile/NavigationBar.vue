@@ -36,9 +36,9 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <span class="text-xs">Beranda</span>
       </RouterLink>
       <RouterLink
-        to="/post"
+        to="/my/pet/add"
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
-        :class="{ active: $route.name === 'post' }"
+        :class="{ active: $route.name === 'add-pet' }"
       >
         <font-awesome-icon icon="circle-plus" />
         <span class="text-xs">Unggah</span>
