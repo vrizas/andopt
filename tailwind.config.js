@@ -22,7 +22,8 @@ module.exports = {
       black: '#191919',
       pink: '#EF144A',
       darkFilter: 'rgba(0, 0, 0, 0.5)',
-      primaryFilter: 'rgba(47, 149, 127, 0.2)'
+      primaryFilter: 'rgba(47, 149, 127, 0.2)',
+      'primaryOpacity-0': 'rgba(47, 149, 127, 0)'
     }
   },
   plugins: []

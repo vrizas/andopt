@@ -40,13 +40,7 @@ const useAutocomplete = (e) => {
 
 <template>
   <main class="bg-white">
-    <section class="relative h-[40vh] text-white">
-      <img
-        src="../../assets/images/hero.jpg"
-        alt=""
-        class="fixed h-[40vh] w-full object-cover"
-        draggable="false"
-      />
+    <section class="relative h-[40vh] text-white bg-[url('../assets/images/hero-large.jpg')] bg-cover bg-bottom bg-no-repeat bg-fixed">
       <div class="absolute top-0 left-0 h-full w-full bg-darkFilter"></div>
       <div
         class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] flex flex-col justify-center items-center gap-4"
@@ -90,7 +84,7 @@ const useAutocomplete = (e) => {
         </form>
       </div>
     </section>
-    <section class="relative bg-white pt-6 px-10">
+    <section class="pt-6 pb-1 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">
         Peliharaan Berdasarkan Kategori
       </h3>
@@ -149,7 +143,7 @@ const useAutocomplete = (e) => {
         </a>
       </div>
     </section>
-    <section class="relative bg-white pt-10 px-10">
+    <section class="pt-10 pb-1 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">
         Yang Mungkin Anda Suka
       </h3>
@@ -165,12 +159,12 @@ const useAutocomplete = (e) => {
           </div>
           <div class="py-3 px-4 h-3/6">
             <h4 class="font-semibold truncate">
-              <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl" />
+              <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
               {{ pet.name }}
             </h4>
-            <p class="text-sm">{{ pet.type.name }} {{pet.type.race}}</p>
-            <p class="text-sm font-medium text-darkGray">{{ pet.age }}</p>
-            <p class="text-sm mt-3">
+            <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
+            <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
+            <p class="text-sm mt-3 truncate">
               <font-awesome-icon
                 icon="location-dot"
                 class="text-primary mr-1"
@@ -181,7 +175,7 @@ const useAutocomplete = (e) => {
         </a>
       </div>
     </section>
-    <section class="relative bg-white pt-10 px-10">
+    <section class="pt-10 pb-1 px-10">
       <h3 class="font-semibold text-lg text-darkGray mb-4">Artikel Terbaru</h3>
       <div class="grid grid-cols-3 gap-5">
         <div class="h-[450px] rounded-lg shadow-andopt">
