@@ -74,7 +74,7 @@ const updateProfileHandler = () => {
             photoURL: downloadURL
           }).then(() => {
             user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-              axios.post(`http://localhost:4000/user/${user.value.uid}/update`, {
+              axios.put(`http://localhost:4000/user/${user.value.uid}`, {
                 username: username.value || currentUsername.value,
                 photoURL: downloadURL
               }, {
@@ -106,7 +106,7 @@ const updateProfileHandler = () => {
       displayName: username.value || currentUsername.value
     }).then(() => {
       user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-        axios.post(`http://localhost:4000/user/${user.value.uid}/update`, {
+        axios.put(`http://localhost:4000/user/${user.value.uid}`, {
           username: username.value || currentUsername.value,
           photoURL: user.value.photoURL
         }, {

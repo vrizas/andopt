@@ -2,8 +2,9 @@
 import {
   ref, computed
 } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth'
-import { useRouter } from 'vue-router'
+
 import defaultProfilePic from '../../assets/images/default-profile-pic.png'
 import EditProfilePopupVue from '../../components/mobile/popup/EditProfilePopup.vue'
 import EditPasswordPopupVue from '../../components/mobile/popup/EditPasswordPopup.vue'
@@ -66,38 +67,38 @@ const signOutHandler = () => {
       <section class="mt-10">
         <h3 class="font-semibold">Dashboard</h3>
         <div class="flex flex-col gap-1 mt-5 ml-3 text-sm">
-          <a href="#" class="flex items-center gap-3 py-2">
+          <RouterLink to="/my/pet/add" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-primary rounded-full"
             >
               <font-awesome-icon icon="plus" />
             </span>
             Unggah Peliharaan
-          </a>
-          <a href="#" class="flex items-center gap-3 py-2">
+          </RouterLink>
+          <RouterLink to="#" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-pink rounded-full"
             >
               <font-awesome-icon icon="heart"/>
             </span>
             Favorit Saya
-          </a>
-          <a href="#" class="flex items-center gap-3 py-2">
+          </RouterLink>
+          <RouterLink to="#" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-darkGray rounded-full"
             >
               <font-awesome-icon icon="clock" />
             </span>
             Terakhir Dilihat
-          </a>
-          <a href="#" class="flex items-center gap-3 py-2">
+          </RouterLink>
+          <RouterLink to="#" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-secondary rounded-full"
             >
               <font-awesome-icon icon="paw" />
             </span>
             Unggahan Saya
-          </a>
+          </RouterLink>
         </div>
       </section>
       <button class="text-pink border-2 border-pink rounded-md text-sm py-2 px-10 font-semibold mt-10 ml-3 focus:bg-pink focus:text-white active:bg-pink active:text-white" @click="signOutHandler">

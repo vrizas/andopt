@@ -90,4 +90,8 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.trashButton:hover .icon, .likeButton:hover .icon {
+  color: #EF144A;
+}
+</style>

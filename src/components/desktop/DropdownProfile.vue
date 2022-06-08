@@ -37,49 +37,48 @@ const signOutHandler = () => {
         leave-class="transform opacity-100 scale-100"
         leave-to-class="transform opacity-0 scale-95"
         >
-        <div v-if="isMenuOpen" class="py-2 absolute right-0">
-            <div class="w-48 bg-white rounded-md shadow-andopt">
-                <p class="flex justify-between py-2 px-3 text-sm mb-3">
-                    <span class="flex gap-2 items-center font-semibold truncate">
-                        <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
-                        {{ username }}
-                    </span>
-                    <RouterLink to="/my" class="text-darkGray">
-                        <font-awesome-icon icon="gear" />
+            <div v-if="isMenuOpen" class="py-2 absolute right-0">
+                <div class="w-48 bg-white rounded-md shadow-andopt">
+                    <p class="flex justify-between py-2 px-3 text-sm mb-3">
+                        <span class="flex gap-2 items-center font-semibold truncate">
+                            <img :src="profilePicUrl || defaultProfilePic" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
+                            {{ username }}
+                        </span>
+                        <RouterLink to="/my" class="text-darkGray">
+                            <font-awesome-icon icon="gear" />
+                        </RouterLink>
+                    </p>
+                    <RouterLink to="/my/pet/add" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                        <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
+                            <font-awesome-icon icon="plus" />
+                        </span>
+                        Unggah Peliharaan
                     </RouterLink>
-                </p>
-                <RouterLink to="/my/pet/add" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
-                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
-                        <font-awesome-icon icon="plus" />
-                    </span>
-                    Unggah Peliharaan
-                </RouterLink>
-                <RouterLink to="/my/favorite" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
-                    <span class="w-6 h-6 rounded-full bg-pink text-white flex items-center justify-center text-xs">
-                        <font-awesome-icon icon="heart"/>
-                    </span>
-                    Favorit Saya
-                </RouterLink>
-                <RouterLink to="/my/lastseen" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
-                    <span class="w-6 h-6 rounded-full bg-darkGray text-white flex items-center justify-center text-xs">
-                        <font-awesome-icon icon="clock" />
-                    </span>
-                    Terakhir Dilihat
-                </RouterLink>
-                <RouterLink to="/my/favorite" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
-                    <span class="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center text-xs">
-                        <font-awesome-icon icon="paw" />
-                    </span>
-                    Unggahan Saya
-                </RouterLink>
-                <hr class="text-lightGray">
-                <button class=" w-full flex gap-2 items-center py-2 px-3 hover:bg-pink hover:text-white rounded-b-md" @click="signOutHandler">
-                    <font-awesome-icon icon="right-from-bracket" />
-                    Keluar
-                </button>
+                    <RouterLink to="/my/favorites" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                        <span class="w-6 h-6 rounded-full bg-pink text-white flex items-center justify-center text-xs">
+                            <font-awesome-icon icon="heart"/>
+                        </span>
+                        Favorit Saya
+                    </RouterLink>
+                    <RouterLink to="/my/lastseen" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                        <span class="w-6 h-6 rounded-full bg-darkGray text-white flex items-center justify-center text-xs">
+                            <font-awesome-icon icon="clock" />
+                        </span>
+                        Terakhir Dilihat
+                    </RouterLink>
+                    <RouterLink to="/my/upload" class="flex gap-2 items-center py-2 px-3 hover:bg-primaryFilter rounded-b-md">
+                        <span class="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center text-xs">
+                            <font-awesome-icon icon="paw" />
+                        </span>
+                        Unggahan Saya
+                    </RouterLink>
+                    <hr class="text-lightGray">
+                    <button class=" w-full flex gap-2 items-center py-2 px-3 hover:bg-pink hover:text-white rounded-b-md" @click="signOutHandler">
+                        <font-awesome-icon icon="right-from-bracket" />
+                        Keluar
+                    </button>
+                </div>
             </div>
-        </div>
-
         </transition>
     </div>
 </template>

@@ -23,9 +23,9 @@ onMounted(() => {
 
 <template>
     <div>
-        <header class="px-3 py-2 w-full fixed z-10 top-0 flex justify-between" ref="header" v-if="isLoggedIn">
+        <header class="px-3 py-2 w-full fixed z-10 top-0 flex justify-between max-w-[600px]" ref="header" v-if="isLoggedIn">
             <div class="relative w-4/5">
-                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0" placeholder="Masukkan jenis peliharaan"/>
+                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan"/>
                 <span class="absolute top-0 left-0 h-full w-10 text-sm flex items-center justify-center text-darkGray">
                     <font-awesome-icon icon="magnifying-glass"/>
                 </span>
@@ -43,7 +43,7 @@ onMounted(() => {
         </header>
         <header class="px-3 py-2 w-full gap-6 fixed z-10 top-0 flex justify-between" ref="header" v-else>
             <div class="relative w-4/5">
-                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0" placeholder="Masukkan jenis peliharaan"/>
+                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan"/>
                 <span class="absolute top-0 left-0 h-full w-10 text-sm flex items-center justify-center text-darkGray">
                     <font-awesome-icon icon="magnifying-glass"/>
                 </span>

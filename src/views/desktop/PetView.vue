@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const route = useRoute()
 const tabImages = ref(null)
@@ -11,6 +12,7 @@ const scrollMin = ref(0)
 const pet = ref(null)
 const petGender = ref('')
 const writerUsername = ref('')
+const auth = getAuth()
 
 axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
   pet.value = res.data.pet
@@ -40,15 +42,33 @@ const scrollLeftHandler = () => {
     behavior: 'smooth'
   })
 }
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      user.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+        axios.post(`http://localhost:4000/user/${user.uid}/lastseen`, {
+          pet_id: route.params.id
+        }, {
+          headers: {
+            'X-Firebase-Token': idToken
+          }
+        })
+      }).catch(function (error) {
+        alert(error.message)
+      })
+    }
+  })
+})
 </script>
 
 <template>
   <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]">
     <section class="relative flex flex-col gap-5 items-center">
-      <img :src="pet.imageUrls[activeTabImage]" alt="cat" class="w-72 h-72 object-cover rounded-lg">
+      <img :src="pet.imageUrls[activeTabImage]" :alt="pet.name" class="w-72 h-72 object-cover rounded-lg">
       <div class="relative" v-if="pet.imageUrls.length > 1">
         <div class="flex gap-4 overflow-x-auto w-60 px-2 tab-images" ref="tabImages">
-          <img :src="url" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
+          <img :src="url" :alt="pet.name+' '+index" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
         </div>
         <button class="absolute right-[-20px] top-1/2 translate-y-[-50%] bg-lightGray w-8 h-8 rounded-full flex items-center justify-center" @click="scrollRightHandler">
           <font-awesome-icon icon="chevron-right" />

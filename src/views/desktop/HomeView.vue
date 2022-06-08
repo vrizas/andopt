@@ -50,7 +50,7 @@ const useAutocomplete = (e) => {
           <div class="relative w-full">
             <input
               type="search"
-              class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0"
+              class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white"
               placeholder="Masukkan jenis peliharaan"
             />
             <span
@@ -61,7 +61,7 @@ const useAutocomplete = (e) => {
           <div class="relative w-full">
             <input
               type="search"
-              class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0"
+              class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white"
               placeholder="Masukkan kota"
               v-model="cityInput"
               @keyup="autoCompleteHandler"
@@ -148,20 +148,27 @@ const useAutocomplete = (e) => {
         Yang Mungkin Anda Suka
       </h3>
       <div class="grid grid-cols-6 gap-5">
-        <a :href="'pet/'+pet.id" class="h-72 rounded-lg shadow-andopt" :id="pet.id" v-for="(pet, index) in pets" :key="pet.id">
-          <div class="h-3/6">
+        <div class="h-72 rounded-lg shadow-andopt" :id="pet.id" v-for="(pet, index) in pets" :key="pet.id">
+          <div class="relative h-3/6">
             <img
               :src="pet.imageUrls[0]"
               :alt="pet.name"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"
             />
+            <div class="flex gap-2 absolute top-2 right-2">
+              <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                <font-awesome-icon icon="heart" class="icon" />
+              </button>
+            </div>
           </div>
           <div class="py-3 px-4 h-3/6">
-            <h4 class="font-semibold truncate">
-              <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
-              {{ pet.name }}
-            </h4>
+            <a :href="'pet/'+pet.id">
+              <h4 class="font-semibold truncate">
+                <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
+                {{ pet.name }}
+              </h4>
+            </a>
             <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
             <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
             <p class="text-sm mt-3 truncate">
@@ -172,7 +179,7 @@ const useAutocomplete = (e) => {
               {{ pet.location.split(',')[0] }}
             </p>
           </div>
-        </a>
+        </div>
       </div>
     </section>
     <section class="pt-10 pb-1 px-10">
