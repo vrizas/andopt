@@ -3,16 +3,53 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import skeleton from '../../assets/images/skeleton.jpg'
 
 const route = useRoute()
+const isLiked = ref(false)
+const likeId = ref('')
 const tabImages = ref(null)
 const activeTabImage = ref(0)
 const scrollAmount = ref(0)
 const scrollMin = ref(0)
 const pet = ref(null)
 const petGender = ref('')
-const writerUsername = ref('')
+const writerUser = ref(null)
 const auth = getAuth()
+const user = ref(null)
+const initialized = ref(false)
+
+onAuthStateChanged(auth, (account) => {
+  if (account) {
+    user.value = account
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`http://localhost:4000/user/${user.value.uid}/lastseen`, {
+        pet_id: route.params.id
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      })
+
+      axios.get(`http://localhost:4000/pet/${route.params.id}/likes`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        res.data.likes.forEach(like => {
+          if (like.user_uid === user.value.uid) {
+            isLiked.value = true
+            likeId.value = like.id
+          }
+        })
+      })
+    }).catch(function (error) {
+      alert(error.message)
+    })
+  } else {
+    user.value = null
+  }
+})
 
 axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
   pet.value = res.data.pet
@@ -22,8 +59,9 @@ axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
     petGender.value = 'venus'
   }
 
-  axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(res => {
-    writerUsername.value = res.data.user.username
+  axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(response => {
+    writerUser.value = response.data.user
+    initialized.value = true
   })
 })
 
@@ -43,29 +81,42 @@ const scrollLeftHandler = () => {
   })
 }
 
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      user.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-        axios.post(`http://localhost:4000/user/${user.uid}/lastseen`, {
-          pet_id: route.params.id
-        }, {
-          headers: {
-            'X-Firebase-Token': idToken
-          }
-        })
-      }).catch(function (error) {
-        alert(error.message)
+const likePetHandler = () => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`http://localhost:4000/pet/${route.params.id}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        isLiked.value = true
+        likeId.value = res.data.like.id
       })
-    }
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = () => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`http://localhost:4000/pet/${route.params.id}/like/${likeId.value}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      isLiked.value = false
+    })
   })
-})
+}
 </script>
 
 <template>
-  <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]">
+  <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]" v-if="initialized">
     <section class="relative flex flex-col gap-5 items-center">
-      <img :src="pet.imageUrls[activeTabImage]" :alt="pet.name" class="w-72 h-72 object-cover rounded-lg">
+      <img :src="pet.imageUrls[activeTabImage] || skeleton" :alt="pet.name" class="w-72 h-72 object-cover rounded-lg">
       <div class="relative" v-if="pet.imageUrls.length > 1">
         <div class="flex gap-4 overflow-x-auto w-60 px-2 tab-images" ref="tabImages">
           <img :src="url" :alt="pet.name+' '+index" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
@@ -100,8 +151,8 @@ onMounted(() => {
     <aside class="shadow-andopt w-1/4 py-8 px-6 rounded-lg h-fit">
       <h4 class="text-xs text-medium text-darkGray mb-2">Pemilik</h4>
       <a href="#" class="flex gap-2 items-center font-semibold truncate">
-          <img src="../../assets/images/default-profile-pic.png" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
-          {{ writerUsername }}
+          <img :src="writerUser.photoURL || skeleton" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
+          {{ writerUser.username }}
       </a>
       <hr class="my-4 text-lightGray">
       <div class="flex flex-col gap-3">
@@ -113,9 +164,13 @@ onMounted(() => {
           <font-awesome-icon icon="paw" class="mr-1" />
           Adopsi
         </button>
-        <button class="border border-pink text-pink hover:bg-pink hover:text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
+        <button class="border border-pink text-pink hover:bg-pink hover:text-white font-semibold text-sm py-1 px-5 w-full rounded-md" v-if="!isLiked" @click="likePetHandler">
           <font-awesome-icon icon="heart" class="mr-1"/>
           Sukai
+        </button>
+        <button class="bg-pink text-white font-semibold text-sm py-1 px-5 w-full rounded-md" v-else @click="unlikePetHandler">
+          <font-awesome-icon icon="heart" class="mr-1"/>
+          Disukai
         </button>
       </div>
     </aside>

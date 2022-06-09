@@ -10,6 +10,9 @@ module.exports = {
       },
       gridTemplateColumns: {
         profile: '1fr 3fr'
+      },
+      gridTemplateRows: {
+        chat: '1fr 10fr 2fr'
       }
     },
     fontFamily: {
@@ -26,7 +29,8 @@ module.exports = {
       pink: '#EF144A',
       darkFilter: 'rgba(0, 0, 0, 0.5)',
       primaryFilter: 'rgba(47, 149, 127, 0.2)',
-      'primaryOpacity-0': 'rgba(47, 149, 127, 0)'
+      'primaryOpacity-0': 'rgba(47, 149, 127, 0)',
+      primaryChat: '#CAFFB9'
     }
   },
   plugins: []

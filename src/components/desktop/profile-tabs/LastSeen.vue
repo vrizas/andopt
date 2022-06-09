@@ -41,8 +41,14 @@ onAuthStateChanged(auth, (account) => {
 })
 
 const deleteLastseenHandler = (lastseenId) => {
-  axios.delete(`http://localhost:4000/user/${user.value.uid}/lastseen/${lastseenId}`).then(res => {
-    pets.value = pets.value.filter(pet => pet.lastseen_id !== lastseenId)
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`http://localhost:4000/user/${user.value.uid}/lastseen/${lastseenId}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      pets.value = pets.value.filter(pet => pet.lastseen_id !== lastseenId)
+    })
   })
 }
 </script>

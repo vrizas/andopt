@@ -5,6 +5,7 @@ import LoginPopupVue from './popup/LoginPopup.vue'
 import RegisterPopupVue from './popup/RegisterPopup.vue'
 import DropdownProfile from './DropdownProfile.vue'
 import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
+import ChatPopup from './popup/ChatPopup.vue'
 
 defineProps({
   isLoggedIn: Boolean
@@ -71,6 +72,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
       </nav>
     </header>
     <component :is="currentView" />
+    <ChatPopup />
   </div>
 </template>
 
