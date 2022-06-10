@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useRoute } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import skeleton from '../../assets/images/skeleton.jpg'
+import CONFIG from '../../config'
 
 defineProps({
   openChatHandler: {
@@ -29,7 +30,7 @@ onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
     user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-      axios.post(`http://localhost:4000/user/${user.value.uid}/lastseen`, {
+      axios.post(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen`, {
         pet_id: route.params.id
       }, {
         headers: {
@@ -37,7 +38,7 @@ onAuthStateChanged(auth, (account) => {
         }
       })
 
-      axios.get(`http://localhost:4000/pet/${route.params.id}/likes`, {
+      axios.get(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/likes`, {
         headers: {
           'X-Firebase-Token': idToken
         }
@@ -57,7 +58,7 @@ onAuthStateChanged(auth, (account) => {
   }
 })
 
-axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/pet/${route.params.id}`).then(res => {
   pet.value = res.data.pet
   if (res.data.pet.gender === 'Jantan') {
     petGender.value = 'mars'
@@ -65,7 +66,7 @@ axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
     petGender.value = 'venus'
   }
 
-  axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(response => {
+  axios.get(`${CONFIG.API_BASE_URL}/user/${pet.value.user_uid}`).then(response => {
     writerUser.value = response.data.user
   })
 })
@@ -89,7 +90,7 @@ const scrollLeftHandler = () => {
 const likePetHandler = () => {
   if (user.value) {
     user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-      axios.post(`http://localhost:4000/pet/${route.params.id}/like`, {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/like`, {
         user_uid: user.value.uid
       }, {
         headers: {
@@ -107,7 +108,7 @@ const likePetHandler = () => {
 
 const unlikePetHandler = () => {
   user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-    axios.delete(`http://localhost:4000/pet/${route.params.id}/like/${likeId.value}`, {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/like/${likeId.value}`, {
       headers: {
         'X-Firebase-Token': idToken
       }

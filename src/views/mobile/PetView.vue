@@ -4,6 +4,7 @@ import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useRoute } from 'vue-router'
 import HeaderBar from '../../components/mobile/HeaderBar.vue'
+import CONFIG from '../../config'
 
 const route = useRoute()
 const tabImages = ref(null)
@@ -24,7 +25,7 @@ onAuthStateChanged(auth, (account) => {
   }
 })
 
-axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/pet/${route.params.id}`).then(res => {
   pet.value = res.data.pet
   if (res.data.pet.gender === 'Jantan') {
     petGender.value = 'mars'
@@ -32,7 +33,7 @@ axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
     petGender.value = 'venus'
   }
 
-  axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(res => {
+  axios.get(`${CONFIG.API_BASE_URL}/user/${pet.value.user_uid}`).then(res => {
     writerUsername.value = res.data.user.username
   })
 })

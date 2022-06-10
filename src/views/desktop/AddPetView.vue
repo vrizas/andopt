@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { nanoid } from 'nanoid'
 import cities from '../../utils/cities'
+import CONFIG from '../../config'
 
 const petName = ref('')
 const petType = ref('')
@@ -49,6 +50,7 @@ onAuthStateChanged(auth, (account) => {
     user.value = account
   } else {
     user.value = null
+    window.location.href = '/#/login'
   }
 })
 
@@ -66,7 +68,6 @@ const uploadImageAsPromise = (file, isTemp = true) => {
     uploadTask.on('state_changed',
       (snapshot) => {
         const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-        console.log(`Proses unggah ${progress}%`)
         flashMessage.value = 'Proses unggah sedang berlangsung...'
       },
       (error) => {
@@ -75,9 +76,7 @@ const uploadImageAsPromise = (file, isTemp = true) => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           flashMessage.value = ''
-          if (!isTemp) {
-            petPhotoUrls.value.push(downloadURL)
-          }
+          resolve(downloadURL)
         })
       }
     )
@@ -101,6 +100,7 @@ const onFileChange = async (e) => {
     await deleteImageAsPromise(petPhotoId)
   }
   newPetPhotos.value = e.target.files
+  petsLength.value = 0
   for (let i = 0; i < e.target.files.length; i++) {
     const imageFile = e.target.files[i]
     uploadImageAsPromise(imageFile)
@@ -145,20 +145,21 @@ const submitHandler = async () => {
     alert('Data tidak lengkap')
   }
 
-  petId.value = nanoid(16)
-  petsLength.value = 0
-  for (let i = 0; i < newPetPhotos.value.length; i++) {
-    const imageFile = newPetPhotos.value[i]
-    uploadImageAsPromise(imageFile, false)
-    petsLength.value++
-  }
-
-  for (let i = 0; i < petsLength.value; i++) {
-    const petPhotoId = i
-    await deleteImageAsPromise(petPhotoId)
-  }
-
   user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    petId.value = nanoid(16)
+    petsLength.value = 0
+    for (let i = 0; i < newPetPhotos.value.length; i++) {
+      const imageFile = newPetPhotos.value[i]
+      const imageUrl = await uploadImageAsPromise(imageFile, false)
+      petPhotoUrls.value.push(imageUrl)
+      petsLength.value++
+    }
+
+    for (let i = 0; i < petsLength.value; i++) {
+      const petPhotoId = i
+      await deleteImageAsPromise(petPhotoId)
+    }
+
     const config = {
       headers: {
         'X-Firebase-Token': idToken
@@ -179,7 +180,7 @@ const submitHandler = async () => {
       desc: petDesc.value
     }
 
-    await axios.post(`http://localhost:4000/user/${user.value.uid}/pet`, pet, config)
+    await axios.post(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/pet`, pet, config)
     flashMessage.value = ''
     router.push('/my/pets')
   }).catch(function (error) {

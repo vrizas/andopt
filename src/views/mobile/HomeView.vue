@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import HeaderBarHome from '../../components/mobile/HeaderBarHome.vue'
+import CONFIG from '../../config'
 
 const pets = ref([])
 const petGenders = ref([])
@@ -17,7 +18,7 @@ onAuthStateChanged(auth, (user) => {
   }
 })
 
-axios.get('http://localhost:4000/pets').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
   pets.value = res.data.pets
   res.data.pets.forEach(pet => {
     if (pet.gender === 'Jantan') {

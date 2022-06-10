@@ -22,6 +22,7 @@ onAuthStateChanged(auth, (account) => {
   } else {
     user.value = null
     isLoggedIn.value = false
+    window.location.href = '/#/login'
   }
 })
 

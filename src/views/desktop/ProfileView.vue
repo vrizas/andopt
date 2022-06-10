@@ -11,7 +11,7 @@ const auth = getAuth()
 
 onAuthStateChanged(auth, (account) => {
   if (!account) {
-    route.push('/#/login')
+    window.location.href = '/#/login'
   }
 })
 </script>

@@ -29,6 +29,9 @@ const chatReceiverUid = ref('')
 const chatPetId = ref('')
 
 const openChatHandler = (uid, petId) => {
+  if (!isLoggedIn.value) {
+    window.location.hash = '/login'
+  }
   chatReceiverUid.value = uid || ''
   chatPetId.value = petId || ''
   openChat.value = true
