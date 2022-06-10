@@ -59,7 +59,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <RouterLink to="/" class="text-xl text-white">
           <font-awesome-icon icon="bell" />
         </RouterLink>
-        <button class="text-xl text-white" @click="openChatHandler">
+        <button class="text-xl text-white" @click="openChatHandler('', '')">
           <font-awesome-icon icon="comment-dots" />
         </button>
         <DropdownProfile />

@@ -26,7 +26,9 @@ const chatPopup = ref(null)
 const messages = ref([])
 const chatRooms = ref([])
 const memberChatRooms = ref([])
-const currentChatRoom = ref(null)
+const activeMemberId = ref(null)
+const activeChatRoomId = ref(null)
+const activeMember = ref(null)
 const message = ref('')
 const messageInput = ref(null)
 const auth = getAuth()
@@ -65,15 +67,33 @@ onAuthStateChanged(auth, (account) => {
             })
           }
 
-          if (doc.data().members.includes(props.chatReceiverUid)) {
-            chatRoomExist = true
-            currentChatRoomId = doc.id
+          if (props.chatReceiverUid) {
+            if (doc.data().members.includes(props.chatReceiverUid) && doc.data().members.includes(account.uid)) {
+              chatRoomExist = true
+              currentChatRoomId = doc.id
+            }
           }
         }
       })
       chatRoomsTemp.sort((a, b) => {
         return b.createdAt - a.createdAt
       })
+
+      if (!chatRoomExist && props.chatReceiverUid) {
+        const result = addDoc(chatRoomsCollection, {
+          members: [account.uid, props.chatReceiverUid],
+          createdAt: Date.now()
+        })
+
+        chatRoomsTemp.push({
+          id: result.id,
+          members: [account.uid, props.chatReceiverUid],
+          createdAt: Date.now()
+        })
+
+        chatRoomExist = true
+        currentChatRoomId = result.id
+      }
       chatRooms.value = chatRoomsTemp
 
       const memberChatRoomsTemp = []
@@ -96,17 +116,15 @@ onAuthStateChanged(auth, (account) => {
         })
 
         memberChatRooms.value = memberChatRoomsTemp
-        console.log(chatRoomExist)
-        if (chatRoomExist) {
-          currentChatRoom.value = {
-            id: currentChatRoomId,
-            member: memberChatRooms.value.find(member => member.id === props.chatReceiverUid)
-          }
+
+        if (props.chatReceiverUid && chatRoomExist) {
+          activeMemberId.value = props.chatReceiverUid
+          activeChatRoomId.value = currentChatRoomId
+          activeMember.value = memberChatRooms.value.find(member => member.id === props.chatReceiverUid)
         } else {
-          currentChatRoom.value = {
-            id: chatRooms.value[0].id,
-            member: memberChatRooms.value[0]
-          }
+          activeMemberId.value = memberChatRooms.value[0].id
+          activeChatRoomId.value = chatRooms.value[0].id
+          activeMember.value = memberChatRooms.value[0]
         }
       })
 
@@ -118,7 +136,7 @@ onAuthStateChanged(auth, (account) => {
             return
           }
 
-          if (doc.data().chat_room_id === currentChatRoom.value.id) {
+          if (doc.data().chat_room_id === activeChatRoomId.value) {
             messagesTemp = doc.data().messages
             shouldSkip = true
           }
@@ -142,59 +160,40 @@ const sendMessageHandler = async () => {
 
   try {
     const messagesLength = messages.value.length
-    let chatRoomExist = false
 
-    chatRooms.value.forEach(chatRoom => {
-      if (chatRoom.members.includes(uid) && chatRoom.members.includes(currentChatRoom.value.member.id)) {
-        chatRoomExist = true
-      }
-    })
-
-    let chatRoomResult = null
-
-    if (!chatRoomExist) {
-      chatRoomResult = await addDoc(chatRoomsCollection, {
-        members: [
-          uid,
-          currentChatRoom.value.member.id
-        ],
-        createdAt: new Date()
+    if (messagesLength > 0) {
+      let messageIdExist = false
+      let messageId = null
+      const messageSnap = await getDocs(messagesCollection)
+      let shouldSkip = false
+      messageSnap.forEach(doc => {
+        if (shouldSkip) {
+          return
+        }
+        if (doc.data().chat_room_id === activeChatRoomId.value) {
+          messageIdExist = true
+          messageId = doc.id
+          shouldSkip = true
+        }
       })
-    } else {
-      chatRoomResult = chatRooms.value[0]
-    }
-
-    let messageIdExist = false
-    let messageId = null
-    const messageSnap = await getDocs(messagesCollection)
-    let shouldSkip = false
-    messageSnap.forEach(doc => {
-      if (shouldSkip) {
-        return
-      }
-      if (doc.data().chat_room_id === chatRoomResult.id) {
-        messageIdExist = true
-        messageId = doc.id
-        shouldSkip = true
-      }
-    })
-    if (messageIdExist) {
-      await updateDoc(doc(db, 'messages', messageId), {
-        messages: arrayUnion({
-          sender_uid: uid,
-          text: message.value,
-          createdAt: new Date()
+      if (messageIdExist) {
+        await updateDoc(doc(db, 'messages', messageId), {
+          messages: arrayUnion({
+            sender_uid: uid,
+            text: message.value,
+            createdAt: new Date()
+          })
         })
-      })
-    } else {
-      await addDoc(messagesCollection, {
-        chat_room_id: chatRoomResult.id,
-        messages: [{
-          sender_uid: uid,
-          text: message.value,
-          createdAt: new Date()
-        }]
-      })
+      } else {
+        await addDoc(messagesCollection, {
+          chat_room_id: activeChatRoomId.value,
+          messages: [{
+            sender_uid: uid,
+            text: message.value,
+            createdAt: new Date()
+          }]
+        })
+      }
     }
 
     message.value = ''
@@ -204,18 +203,38 @@ const sendMessageHandler = async () => {
   }
 }
 
-const changeCurrentChatRoomHandler = (chatRoomId) => {
-  const member = chatRooms.value.find(chatRoom => {
+const changeActiveChatRoomHandler = (chatRoomId) => {
+  let activeChatRoom = null
+  chatRooms.value.forEach(chatRoom => {
     if (chatRoom.id === chatRoomId) {
-      return chatRoom.members.find(member => member !== user.value.uid)
+      activeChatRoom = chatRoom
     }
-    return null
   })
-  if (member) {
-    currentChatRoom.value = {
-      id: chatRoomId,
-      member: memberChatRooms.value.find(memberChatRoom => memberChatRoom.id === member.id)
-    }
+
+  const memberId = activeChatRoom.members.find(member => member !== user.value.uid)
+  if (memberId) {
+    activeMemberId.value = memberId
+    activeChatRoomId.value = chatRoomId
+    activeMember.value = memberChatRooms.value.find(memberChatRoom => memberChatRoom.id === memberId)
+
+    const messageUnsub = onSnapshot(messagesCollection, snapshot => {
+      let messagesTemp = []
+      let shouldSkip = false
+      snapshot.forEach((doc) => {
+        if (shouldSkip) {
+          return
+        }
+
+        if (doc.data().chat_room_id === activeChatRoomId.value) {
+          messagesTemp = doc.data().messages
+          shouldSkip = true
+        }
+      })
+      messagesTemp.sort((a, b) => {
+        return a.createdAt - b.createdAt
+      })
+      messages.value = messagesTemp
+    })
   }
 }
 
@@ -243,7 +262,7 @@ onMounted(() => {
 <template>
     <div class="chat fixed bottom-5 right-5 shadow-andopt rounded-md flex w-1/3 h-2/4 bg-white text-sm translate-y-full" ref="chatPopup">
         <aside class="w-1/3">
-            <button class="flex items-center px-3 py-2 rounded-l-md rounded-bl-none w-full text-left" :class="{'bg-primaryFilter':currentChatRoom.member===memberChatRooms[index]}" v-for="(member, index) in memberChatRooms" :key="member.id" @click="changeCurrentChatRoomHandler">
+            <button class="flex items-center px-3 py-2 rounded-l-md rounded-bl-none w-full text-left" :class="{'bg-primaryFilter':activeMemberId===member.id}" v-for="(member, index) in memberChatRooms" :key="member.id" @click="changeActiveChatRoomHandler(chatRooms[index].id)">
                 <img
                 :src="member.photoURL"
                 class="rounded-full w-7 h-7 mr-3"
@@ -259,11 +278,11 @@ onMounted(() => {
             <div class="flex justify-between items-center px-3 py-2 rounded-r-md rounded-br-none bg-primary text-white">
                 <div class="flex gap-2 items-center">
                     <img
-                    :src="currentChatRoom?.member.photoURL || skeleton"
+                    :src="activeMember?.photoURL || skeleton"
                     class="rounded-full w-6 h-6"
-                    :alt="currentChatRoom?.member.username || ''"
+                    :alt="activeMember?.username || ''"
                     />
-                    <p class="font-medium">{{currentChatRoom?.member.username||''}}</p>
+                    <p class="font-medium">{{activeMember?.username||''}}</p>
                 </div>
                 <button class="text-lg" @click="closeChatHandler">
                     <font-awesome-icon icon="times" />
