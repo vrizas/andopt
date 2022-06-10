@@ -261,7 +261,7 @@ onMounted(() => {
 
 <template>
     <div class="chat fixed bottom-5 right-5 shadow-andopt rounded-md flex w-1/3 h-2/4 bg-white text-sm translate-y-full" ref="chatPopup">
-        <aside class="w-1/3">
+        <aside class="w-1/3 overflow-y-auto">
             <button class="flex items-center px-3 py-2 rounded-l-md rounded-bl-none w-full text-left" :class="{'bg-primaryFilter':activeMemberId===member.id}" v-for="(member, index) in memberChatRooms" :key="member.id" @click="changeActiveChatRoomHandler(chatRooms[index].id)">
                 <img
                 :src="member.photoURL"
