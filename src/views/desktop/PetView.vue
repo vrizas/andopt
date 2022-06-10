@@ -5,6 +5,13 @@ import { useRoute } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import skeleton from '../../assets/images/skeleton.jpg'
 
+defineProps({
+  openChatHandler: {
+    type: Function,
+    default: () => {}
+  }
+})
+
 const route = useRoute()
 const isLiked = ref(false)
 const likeId = ref('')
@@ -17,7 +24,6 @@ const petGender = ref('')
 const writerUser = ref(null)
 const auth = getAuth()
 const user = ref(null)
-const initialized = ref(false)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
@@ -61,7 +67,6 @@ axios.get(`http://localhost:4000/pet/${route.params.id}`).then(res => {
 
   axios.get(`http://localhost:4000/user/${pet.value.user_uid}`).then(response => {
     writerUser.value = response.data.user
-    initialized.value = true
   })
 })
 
@@ -114,10 +119,10 @@ const unlikePetHandler = () => {
 </script>
 
 <template>
-  <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]" v-if="initialized">
+  <main class="py-8 px-10 flex gap-10 bg-white min-h-[80vh]">
     <section class="relative flex flex-col gap-5 items-center">
-      <img :src="pet.imageUrls[activeTabImage] || skeleton" :alt="pet.name" class="w-72 h-72 object-cover rounded-lg">
-      <div class="relative" v-if="pet.imageUrls.length > 1">
+      <img :src="pet?.imageUrls[activeTabImage] || skeleton" :alt="pet?.name" class="w-72 h-72 object-cover rounded-lg">
+      <div class="relative" v-if="pet?.imageUrls.length > 1">
         <div class="flex gap-4 overflow-x-auto w-60 px-2 tab-images" ref="tabImages">
           <img :src="url" :alt="pet.name+' '+index" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
         </div>
@@ -131,32 +136,32 @@ const unlikePetHandler = () => {
     </section>
     <section class="w-1/2">
       <h2 class="font-bold text-xl">
-        {{ pet.name }}
-        <font-awesome-icon :icon="petGender" class="text-darkGray text-2xl ml-3" />
+        {{ pet?.name }}
+        <font-awesome-icon :icon="petGender || 'mars'" class="text-darkGray text-2xl ml-3" />
       </h2>
-      <p class="mt-2">{{ pet.type.name }} {{pet.type.race}}</p>
-      <p class="font-medium text-darkGray mt-1">{{ pet.age }}</p>
+      <p class="mt-2">{{ pet?.type.name }} {{pet?.type.race}}</p>
+      <p class="font-medium text-darkGray mt-1">{{ pet?.age }}</p>
       <p class="mt-3">
         <font-awesome-icon
           icon="location-dot"
           class="text-primary mr-1"
         />
-        {{ pet.location }}
+        {{ pet?.location }}
       </p>
       <div class="mt-8">
         <h3 class="font-medium text-lg text-darkGray mb-2">Deskripsi</h3>
-        <p class="text-sm">{{ pet.desc }}</p>
+        <p class="text-sm">{{ pet?.desc }}</p>
       </div>
     </section>
     <aside class="shadow-andopt w-1/4 py-8 px-6 rounded-lg h-fit">
       <h4 class="text-xs text-medium text-darkGray mb-2">Pemilik</h4>
       <a href="#" class="flex gap-2 items-center font-semibold truncate">
-          <img :src="writerUser.photoURL || skeleton" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
-          {{ writerUser.username }}
+          <img :src="writerUser?.photoURL || skeleton" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
+          {{ writerUser?.username }}
       </a>
       <hr class="my-4 text-lightGray">
       <div class="flex flex-col gap-3">
-        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
+        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.uid, route.params.id)">
           <font-awesome-icon icon="comment-dots" class="mr-1" />
           Chat
         </button>

@@ -9,8 +9,7 @@ defineProps({
     default: ''
   },
   createdAt: {
-    type: String,
-    default: ''
+    type: Date
   }
 })
 
@@ -45,7 +44,7 @@ const timeSince = (date) => {
 
 <template>
     <div class="flex flex-col gap-1" :class="{'items-end': isSender}">
-        <p class="rounded-md py-2 px-3" :class="isSender ? 'bg-primaryChat' : 'bg-[#eaeaea]'">{{ message }}</p>
-        <span class="text-xs">{{timeSince(createdAt)}}</span>
+        <p class="rounded-md py-2 px-3 w-fit" :class="isSender ? 'bg-primaryChat' : 'bg-[#eaeaea]'">{{ message }}</p>
+        <span class="text-[11px]">{{timeSince(createdAt)}}</span>
     </div>
 </template>
