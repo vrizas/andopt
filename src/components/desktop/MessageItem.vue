@@ -37,7 +37,7 @@ const timeSince = (date) => {
   if (interval > 1) {
     return Math.floor(interval) + ' menit yang lalu'
   }
-  return Math.floor(seconds) + ' detik yang lalu'
+  return 'baru saja'
 }
 
 </script>

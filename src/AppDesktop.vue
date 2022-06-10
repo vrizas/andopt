@@ -29,13 +29,8 @@ const chatReceiverUid = ref('')
 const chatPetId = ref('')
 
 const openChatHandler = (uid, petId) => {
-  if (uid && petId) {
-    chatReceiverUid.value = uid
-    chatPetId.value = petId
-  } else {
-    chatReceiverUid.value = ''
-    chatPetId.value = ''
-  }
+  chatReceiverUid.value = uid || ''
+  chatPetId.value = petId || ''
   openChat.value = true
 }
 

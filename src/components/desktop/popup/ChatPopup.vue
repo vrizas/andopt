@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import gsap from 'gsap'
 import { getAuth, onAuthStateChanged } from '@firebase/auth'
 import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore'
@@ -34,6 +34,16 @@ const user = ref(null)
 const db = getFirestore()
 const messagesCollection = collection(db, 'messages')
 const chatRoomsCollection = collection(db, 'chat_rooms')
+const bottom = ref(null)
+watch(
+  messages,
+  () => {
+    nextTick(() => {
+      bottom.value?.scrollIntoView({ behavior: 'smooth' })
+    })
+  },
+  { deep: true }
+)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
@@ -86,6 +96,7 @@ onAuthStateChanged(auth, (account) => {
         })
 
         memberChatRooms.value = memberChatRoomsTemp
+        console.log(chatRoomExist)
         if (chatRoomExist) {
           currentChatRoom.value = {
             id: currentChatRoomId,
@@ -134,7 +145,7 @@ const sendMessageHandler = async () => {
     let chatRoomExist = false
 
     chatRooms.value.forEach(chatRoom => {
-      if (chatRoom.members.includes(uid) && chatRoom.members.includes('r2RAXaN98Id0Ik4wYjXh2OfPTov1')) {
+      if (chatRoom.members.includes(uid) && chatRoom.members.includes(currentChatRoom.value.member.id)) {
         chatRoomExist = true
       }
     })
@@ -145,7 +156,7 @@ const sendMessageHandler = async () => {
       chatRoomResult = await addDoc(chatRoomsCollection, {
         members: [
           uid,
-          'r2RAXaN98Id0Ik4wYjXh2OfPTov1'
+          currentChatRoom.value.member.id
         ],
         createdAt: new Date()
       })
@@ -212,7 +223,7 @@ onMounted(() => {
   if (props.chatPetId) {
     axios.get(`http://localhost:4000/pet/${props.chatPetId}`)
       .then(({ data }) => {
-        message.value = `Saya ingin bertanya, apakah boleh saya boleh mengadopsi ${data.pet.name}?`
+        message.value = `Halo saya ingin bertanya, apakah boleh saya mengadopsi ${data.pet.name}?`
       })
       .catch(error => {
         console.error(error)
@@ -260,6 +271,7 @@ onMounted(() => {
             </div>
             <div class="flex flex-col gap-2 overflow-y-auto p-4 text-xs">
                 <MessageItem :isSender="message.sender_uid === user?.uid" :message="message.text" :createdAt="message.createdAt.toDate()" v-for="message in messages" :key="message.id" />
+                <div ref="bottom" />
             </div>
             <form class="relative w-full" @submit.prevent="sendMessageHandler">
                 <textarea name="message" id="message" cols="30" rows="2" class="w-full border-t border-darkGray text-xs py-3 pl-3 pr-10 focus:outline-0" v-model="message" ref="messageInput">

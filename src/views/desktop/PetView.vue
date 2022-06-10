@@ -161,11 +161,11 @@ const unlikePetHandler = () => {
       </a>
       <hr class="my-4 text-lightGray">
       <div class="flex flex-col gap-3">
-        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.uid, route.params.id)">
+        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.uid)">
           <font-awesome-icon icon="comment-dots" class="mr-1" />
           Chat
         </button>
-        <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
+        <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.uid, route.params.id)">
           <font-awesome-icon icon="paw" class="mr-1" />
           Adopsi
         </button>
