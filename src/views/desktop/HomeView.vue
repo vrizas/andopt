@@ -43,6 +43,13 @@ const searchPetHandler = (e) => {
   if (queryInput.value && locInput.value) {
     const newLocInput = locInput.value.replace(/\./g, '_')
     window.location.href = `/search/${queryInput.value}/${newLocInput}`
+  } else if (queryInput.value && !locInput.value) {
+    window.location.href = `/search/${queryInput.value}`
+  } else if (!queryInput.value && locInput.value) {
+    const newLocInput = locInput.value.replace(/\./g, '_')
+    window.location.href = `/search/${newLocInput}`
+  } else {
+    window.location.href = '/search'
   }
 }
 </script>
@@ -51,9 +58,7 @@ const searchPetHandler = (e) => {
   <main class="bg-white">
     <section class="relative h-[40vh] text-white bg-[url('../assets/images/hero-large.jpg')] bg-cover bg-bottom bg-no-repeat bg-fixed">
       <div class="absolute top-0 left-0 h-full w-full bg-darkFilter"></div>
-      <div
-        class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] flex flex-col justify-center items-center gap-4"
-      >
+      <div class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] flex flex-col justify-center items-center gap-4">
         <h2 class="font-montserrat text-4xl font-bold">Get your bestie</h2>
         <form class="text-black w-[75vw] flex gap-3" @submit.prevent="searchPetHandler">
           <div class="relative w-full">
@@ -99,7 +104,7 @@ const searchPetHandler = (e) => {
         Peliharaan Berdasarkan Kategori
       </h3>
       <div class="grid grid-cols-4 gap-5">
-        <a href="#" class="h-72 rounded-lg shadow-andopt">
+        <a href="/search/kucing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/cat.jpg"
@@ -112,7 +117,7 @@ const searchPetHandler = (e) => {
             Kucing
           </h4>
         </a>
-        <a href="#" class="h-72 rounded-lg shadow-andopt">
+        <a href="/search/anjing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/dog.jpg"
@@ -125,7 +130,7 @@ const searchPetHandler = (e) => {
             Anjing
           </h4>
         </a>
-        <a href="#" class="h-72 rounded-lg shadow-andopt">
+        <a href="/search/burung" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/bird.jpg"
@@ -138,7 +143,7 @@ const searchPetHandler = (e) => {
             Burung
           </h4>
         </a>
-        <a href="#" class="h-72 rounded-lg shadow-andopt">
+        <a href="/search" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6 flex justify-center items-center">
             <img
               src="../../assets/icons/paw-gray.svg"

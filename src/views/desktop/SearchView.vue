@@ -14,19 +14,70 @@ const autoCompleteListVisible = ref(false)
 const filteredCities = ref([])
 const pets = ref([])
 const petGenders = ref([])
+const filters = ref({
+  cat: false,
+  dog: false,
+  turtle: false,
+  bird: false,
+  rabbit: false,
+  fish: false
+})
+const catFilter = ref(false)
+const dogFilter = ref(false)
+const turtleFilter = ref(false)
+const birdFilter = ref(false)
+const rabbitFilter = ref(false)
+const fishFilter = ref(false)
 
-if (route.params.query && route.params.location) {
-  axios.get(`${CONFIG.API_BASE_URL}/pets/${route.params.query}/${newLoc}`).then(res => {
-    pets.value = res.data.pets
-    res.data.pets.forEach(pet => {
-      if (pet.gender === 'Jantan') {
-        petGenders.value.push('mars')
-      } else if (pet.gender === 'Betina') {
-        petGenders.value.push('venus')
-      }
+const getSearchData = (query, location) => {
+  if (query && location) {
+    axios.get(`${CONFIG.API_BASE_URL}/pets/${query}/${newLoc}`).then(res => {
+      pets.value = res.data.pets
+      res.data.pets.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
     })
-  })
+  } else if (query && !location) {
+    axios.get(`${CONFIG.API_BASE_URL}/pets/query/${query}`).then(res => {
+      pets.value = res.data.pets
+      res.data.pets.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
+    })
+  } else if (!query && location) {
+    axios.get(`${CONFIG.API_BASE_URL}/pets/location/${location}`).then(res => {
+      pets.value = res.data.pets
+      res.data.pets.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
+    })
+  } else {
+    axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
+      pets.value = res.data.pets
+      res.data.pets.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
+    })
+  }
 }
+
+getSearchData(route.params.query, route.params.location)
 
 const autoCompleteHandler = (e) => {
   const userData = e.target.value
@@ -45,28 +96,57 @@ const useAutocomplete = (e) => {
 }
 
 const searchPetHandler = (e) => {
-  if (queryInput.value && locInput.value) {
-    axios.get(`${CONFIG.API_BASE_URL}/pets/${queryInput.value}/${locInput.value}`).then(res => {
-      pets.value = res.data.pets
-      res.data.pets.forEach(pet => {
-        if (pet.gender === 'Jantan') {
-          petGenders.value.push('mars')
-        } else if (pet.gender === 'Betina') {
-          petGenders.value.push('venus')
-        }
-      })
+  getSearchData(queryInput.value, locInput.value)
+}
+
+const filterPetHandler = (e, species) => {
+  if (e.target.checked) {
+    Object.keys(filters.value).forEach(key => {
+      catFilter.value.checked = false
+      dogFilter.value.checked = false
+      turtleFilter.value.checked = false
+      birdFilter.value.checked = false
+      rabbitFilter.value.checked = false
+      fishFilter.value.checked = false
+      e.target.checked = true
+      if (key === species) {
+        filters.value[key] = true
+      } else {
+        filters.value[key] = false
+      }
     })
+
+    if (filters.value.cat === true) {
+      getSearchData('kucing')
+    } else if (filters.value.dog === true) {
+      getSearchData('anjing')
+    } else if (filters.value.turtle === true) {
+      getSearchData('kura-kura')
+    } else if (filters.value.bird === true) {
+      getSearchData('burung')
+    } else if (filters.value.rabbit === true) {
+      getSearchData('kelinci')
+    } else if (filters.value.fish === true) {
+      getSearchData('ikan')
+    }
+  } else {
+    Object.keys(filters.value).forEach(key => {
+      if (key === species) {
+        filters.value[key] = false
+      }
+    })
+    getSearchData()
   }
 }
 </script>
 
 <template>
   <main class="grid grid-cols-profile min-h-[80vh]">
-    <aside class="shadow-andopt py-7 px-8 h-fit rounded-md">
+    <aside class="shadow-andopt py-7 px-8 h-fit rounded-md min-h-screen">
         <form>
             <section class="flex justify-between items-center text-sm">
                 <h2 class="font-semibold">Terapkan Filter</h2>
-                <button type="reset" class="text-primary font-semibold">Reset Filter</button>
+                <button type="reset" class="text-primary font-semibold" @click="getSearchData()">Reset Filter</button>
             </section>
             <hr class="text-[#ccc] my-5">
             <section>
@@ -74,27 +154,27 @@ const searchPetHandler = (e) => {
                     <h3 class="text-sm font-medium">Berdasarkan Kategori</h3>
                     <div class="mt-4 flex flex-col gap-3">
                         <label for="cat" class="text-sm flex items-center gap-2">
-                            <input id="cat" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="cat" type="checkbox" class="w-3 h-3 rounded" ref="catFilter" @click="e => filterPetHandler(e, 'cat')">
                             Kucing
                         </label>
                         <label for="dog" class="text-sm flex items-center gap-2">
-                            <input id="dog" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="dog" type="checkbox" class="w-3 h-3 rounded" ref="dogFilter" @click="e => filterPetHandler(e, 'dog')" >
                             Anjing
                         </label>
                         <label for="turtle" class="text-sm flex items-center gap-2">
-                            <input id="turtle" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="turtle" type="checkbox" class="w-3 h-3 rounded" ref="turtleFilter" @click="e => filterPetHandler(e, 'turtle')">
                             Kura-kura
                         </label>
                         <label for="bird" class="text-sm flex items-center gap-2">
-                            <input id="bird" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="bird" type="checkbox" class="w-3 h-3 rounded" ref="birdFilter" @click="e => filterPetHandler(e, 'bird')">
                             Burung
                         </label>
                         <label for="rabbit" class="text-sm flex items-center gap-2">
-                            <input id="rabbit" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="rabbit" type="checkbox" class="w-3 h-3 rounded" ref="rabbitFilter" @click="e => filterPetHandler(e, 'rabbit')">
                             Kelinci
                         </label>
                         <label for="fish" class="text-sm flex items-center gap-2">
-                            <input id="fish" type="checkbox" class="w-3 h-3 rounded" >
+                            <input id="fish" type="checkbox" class="w-3 h-3 rounded" ref="fishFilter" @click="e => filterPetHandler(e, 'fish')">
                             Ikan
                         </label>
                     </div>
