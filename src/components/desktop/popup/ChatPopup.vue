@@ -123,9 +123,11 @@ onAuthStateChanged(auth, (account) => {
           activeChatRoomId.value = currentChatRoomId
           activeMember.value = memberChatRooms.value.find(member => member.id === props.chatReceiverUid)
         } else {
-          activeMemberId.value = memberChatRooms.value[0].id
-          activeChatRoomId.value = chatRooms.value[0].id
-          activeMember.value = memberChatRooms.value[0]
+          if (memberChatRooms.value.length > 0) {
+            activeMemberId.value = memberChatRooms.value[0].id
+            activeChatRoomId.value = chatRooms.value[0].id
+            activeMember.value = memberChatRooms.value[0]
+          }
         }
       })
 
