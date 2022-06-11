@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -15,6 +16,7 @@ import './assets/base.css'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
+const db = getFirestore(app)
 const storage = getStorage(app)
 
 library.add(fas, far)

@@ -16,6 +16,22 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../../views/mobile/ProfileView.vue')
+    },
+    {
+      path: '/my/pet/add',
+      name: 'add-pet',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/mobile/AddPetView.vue')
+    },
+    {
+      path: '/pet/:id',
+      name: 'pet',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../../views/mobile/PetView.vue')
     }
   ]
 })

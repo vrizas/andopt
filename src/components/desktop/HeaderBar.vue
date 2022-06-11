@@ -5,9 +5,29 @@ import LoginPopupVue from './popup/LoginPopup.vue'
 import RegisterPopupVue from './popup/RegisterPopup.vue'
 import DropdownProfile from './DropdownProfile.vue'
 import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
+import ChatPopup from './popup/ChatPopup.vue'
 
 defineProps({
-  isLoggedIn: Boolean
+  isLoggedIn: {
+    type: Boolean,
+    default: false
+  },
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
 })
 
 const routes = {
@@ -39,9 +59,9 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <RouterLink to="/" class="text-xl text-white">
           <font-awesome-icon icon="bell" />
         </RouterLink>
-        <RouterLink to="/" class="text-xl text-white">
+        <button class="text-xl text-white" @click="openChatHandler('', '')">
           <font-awesome-icon icon="comment-dots" />
-        </RouterLink>
+        </button>
         <DropdownProfile />
       </nav>
     </header>
@@ -71,6 +91,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
       </nav>
     </header>
     <component :is="currentView" />
+    <ChatPopup :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" v-if="openChat && isLoggedIn" />
   </div>
 </template>
 

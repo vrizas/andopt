@@ -35,13 +35,18 @@ const submitHandler = async (e) => {
     createUserWithEmailAndPassword(auth, email.value, password.value)
       .then((userCredential) => {
         const { user } = userCredential
-        axios.post('http://localhost:4000/user/register', {
-          uid: user.uid
-        })
         const randomName = uniqueNamesGenerator({
           dictionaries: [animals, colors],
           length: 2
         }).replace('_', '')
+
+        axios.post('http://localhost:4000/user/register', {
+          uid: user.uid,
+          username: randomName,
+          email: email.value,
+          photoURL: defaultProfilePic
+        })
+
         updateProfile(auth.currentUser, {
           displayName: randomName,
           photoURL: defaultProfilePic

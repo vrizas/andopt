@@ -1,7 +1,8 @@
 <script setup>
 import { gsap } from 'gsap'
 import { ref, onMounted } from 'vue'
-import { getAuth, updateProfile } from 'firebase/auth'
+import axios from 'axios'
+import { getAuth, updateProfile, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
 
@@ -13,22 +14,19 @@ const profilePicUrl = ref('')
 const currentUsername = ref('')
 const currentEmail = ref('')
 const auth = getAuth()
-const user = auth.currentUser
+const user = ref(null)
 
-if (user) {
-  currentUsername.value = user.displayName
-  currentEmail.value = user.email
-  profilePicUrl.value = user.photoURL
-}
+onAuthStateChanged(auth, (account) => {
+  if (account) {
+    currentUsername.value = account.displayName
+    currentEmail.value = account.email
+    profilePicUrl.value = account.photoURL
+    user.value = account
+  }
+})
 
 const closePopup = () => {
-  const desertRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}(temp)`)
-  deleteObject(desertRef).then(() => {
-
-  })
-  if (user) {
-    profilePicUrl.value = user.photoURL
-  }
+  profilePicUrl.value = user.value.photoURL
 
   window.location.hash = '/'
 }
@@ -37,7 +35,7 @@ const onFileChange = (e) => {
   const file = e.target.files[0]
   if (!file) return
   newProfilePic.value = file
-  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}(temp)`)
+  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}(temp)`)
   const uploadTask = uploadBytesResumable(storageImageRef, file)
 
   uploadTask.on('state_changed',
@@ -57,32 +55,71 @@ const onFileChange = (e) => {
 }
 
 const updateProfileHandler = () => {
-  const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.uid}`)
-  const uploadTask = uploadBytesResumable(storageImageRef, newProfilePic.value)
+  if (newProfilePic.value) {
+    const storageImageRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}`)
+    const uploadTask = uploadBytesResumable(storageImageRef, newProfilePic.value)
 
-  uploadTask.on('state_changed',
-    (snapshot) => {
-      const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-      console.log('Upload is ' + progress + '% done')
-    },
-    (error) => {
-      alert(error)
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        updateProfile(auth.currentUser, {
-          displayName: username.value || currentUsername.value,
-          photoURL: downloadURL
-        }).then(() => {
-          currentUsername.value = username.value || currentUsername.value
-          profilePicUrl.value = downloadURL
-          closePopup()
-        }).catch((error) => {
-          alert(error.message)
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        console.log('Upload is ' + progress + '% done')
+      },
+      (error) => {
+        alert(error)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          updateProfile(auth.currentUser, {
+            displayName: username.value || currentUsername.value,
+            photoURL: downloadURL
+          }).then(() => {
+            user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+              axios.put(`http://localhost:4000/user/${user.value.uid}`, {
+                username: username.value || currentUsername.value,
+                photoURL: downloadURL
+              }, {
+                headers: {
+                  'X-Firebase-Token': idToken
+                }
+              })
+            }).catch(function (error) {
+              alert(error.message)
+            })
+
+            currentUsername.value = username.value || currentUsername.value
+            profilePicUrl.value = downloadURL
+
+            const desertRef = storageRef(storage, `images/profile-pics/profile-pic-${user.value.uid}(temp)`)
+            deleteObject(desertRef).then(() => {
+              closePopup()
+            }).catch(function (error) {
+              alert(error.message)
+            })
+          }).catch((error) => {
+            alert(error.message)
+          })
         })
+      }
+    )
+  } else {
+    updateProfile(auth.currentUser, {
+      displayName: username.value || currentUsername.value
+    }).then(() => {
+      user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+        axios.put(`http://localhost:4000/user/${user.value.uid}`, {
+          username: username.value || currentUsername.value,
+          photoURL: user.value.photoURL
+        }, {
+          headers: {
+            'X-Firebase-Token': idToken
+          }
+        })
+        closePopup()
+      }).catch(function (error) {
+        alert(error.message)
       })
-    }
-  )
+    })
+  }
 }
 
 onMounted(() => {

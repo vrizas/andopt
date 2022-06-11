@@ -10,7 +10,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/my',
+      path: '/my/:tab?',
       name: 'profile',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -18,24 +18,16 @@ const router = createRouter({
       component: () => import('../../views/desktop/ProfileView.vue')
     },
     {
-      path: '/my/favorites',
-      name: 'favorites',
+      path: '/my/pet/add',
+      name: 'add-pet',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
+      component: () => import('../../views/desktop/AddPetView.vue')
     },
     {
-      path: '/my/lastseen',
-      name: 'lastseen',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/desktop/ProfileView.vue')
-    },
-    {
-      path: '/my/upload',
-      name: 'upload',
+      path: '/my/pets',
+      name: 'pets',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.

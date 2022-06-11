@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-    <ul class="absolute bg-white text-black w-full text-sm shadow-andopt rounded-b" v-if="cities.length > 0">
+    <ul class="absolute bg-white text-black w-full max-h-72 overflow-y-auto overflow-x-hidden text-sm shadow-andopt rounded-b-md" v-if="cities.length > 0">
         <li class="h-10 hover:bg-primaryFilter" v-for="city in cities" :key="city">
             <button class="w-full h-full text-left mx-4" @click.prevent="clickHandler">
                 <font-awesome-icon icon="location-dot" class="text-darkGray text-xs mr-1" />

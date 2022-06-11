@@ -26,47 +26,47 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
 
 <template>
   <div>
-    <nav class="flex justify-between w-full fixed bottom-0 left-0 right-0 bg-white text-xl shadow-andopt text-darkGray max-w-[600px] m-auto">
+    <nav class="flex justify-between w-full fixed bottom-0 left-0 right-0 bg-white text-lg shadow-andopt text-darkGray max-w-[600px] m-auto">
       <RouterLink
         to="/"
-        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
         :class="{ active: $route.name === 'home' }"
       >
         <font-awesome-icon icon="house" />
-        <span class="text-sm">Beranda</span>
+        <span class="text-xs">Beranda</span>
       </RouterLink>
       <RouterLink
-        to="/post"
-        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
-        :class="{ active: $route.name === 'post' }"
+        to="/my/pet/add"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
+        :class="{ active: $route.name === 'add-pet' }"
       >
         <font-awesome-icon icon="circle-plus" />
-        <span class="text-sm">Unggah</span>
+        <span class="text-xs">Unggah</span>
       </RouterLink>
       <RouterLink
         to="/favorite"
-        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
         :class="{ active: $route.name === 'favorite' }"
       >
         <font-awesome-icon icon="heart" />
-        <span class="text-sm">Favorit</span>
+        <span class="text-xs">Favorit</span>
       </RouterLink>
       <RouterLink
         to="/my"
-        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
         :class="{ active: $route.name === 'profile' }"
         v-if="isLoggedIn"
       >
         <font-awesome-icon icon="user" />
-        <span class="text-sm">Profil</span>
+        <span class="text-xs">Profil</span>
       </RouterLink>
       <a
         href="#/login"
-        class="flex flex-col justify-center items-center gap-1 w-1/4 h-16"
+        class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
         v-else
       >
         <font-awesome-icon icon="user" />
-        <span class="text-sm">Profil</span>
+        <span class="text-xs">Profil</span>
       </a>
       <div class="indicator"></div>
     </nav>
