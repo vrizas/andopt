@@ -5,7 +5,8 @@ import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 import cities from '../../utils/cities'
 import CONFIG from '../../config'
 
-const cityInput = ref('')
+const queryInput = ref('')
+const locInput = ref('')
 const autoCompleteListVisible = ref(false)
 const filteredCities = ref([])
 const pets = ref([])
@@ -34,8 +35,15 @@ const autoCompleteHandler = (e) => {
 
 const useAutocomplete = (e) => {
   const choosenCity = e.target.innerText.trim()
-  cityInput.value = choosenCity
+  locInput.value = choosenCity
   autoCompleteListVisible.value = false
+}
+
+const searchPetHandler = (e) => {
+  if (queryInput.value && locInput.value) {
+    const newLocInput = locInput.value.replace(/\./g, '_')
+    window.location.href = `/search/${queryInput.value}/${newLocInput}`
+  }
 }
 </script>
 
@@ -47,12 +55,13 @@ const useAutocomplete = (e) => {
         class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] flex flex-col justify-center items-center gap-4"
       >
         <h2 class="font-montserrat text-4xl font-bold">Get your bestie</h2>
-        <form class="text-black w-[75vw] flex gap-3" @submit.prevent="">
+        <form class="text-black w-[75vw] flex gap-3" @submit.prevent="searchPetHandler">
           <div class="relative w-full">
             <input
               type="search"
               class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white"
               placeholder="Masukkan jenis peliharaan"
+              v-model="queryInput"
             />
             <span
               class="absolute top-0 left-0 h-full w-10 flex items-center justify-center text-darkGray"
@@ -64,7 +73,7 @@ const useAutocomplete = (e) => {
               type="search"
               class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white"
               placeholder="Masukkan kota"
-              v-model="cityInput"
+              v-model="locInput"
               @keyup="autoCompleteHandler"
             />
             <span

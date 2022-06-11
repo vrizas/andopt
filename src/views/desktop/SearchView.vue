@@ -1,13 +1,68 @@
 <script setup>
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
+import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
+import cities from '../../utils/cities'
+import CONFIG from '../../config'
 
 const route = useRoute()
+const newLoc = route.params.location.replace(/_/g, '.')
+const queryInput = ref(route.params.query)
+const locInput = ref(newLoc)
+const autoCompleteListVisible = ref(false)
+const filteredCities = ref([])
+const pets = ref([])
+const petGenders = ref([])
 
+if (route.params.query && route.params.location) {
+  axios.get(`${CONFIG.API_BASE_URL}/pets/${route.params.query}/${newLoc}`).then(res => {
+    pets.value = res.data.pets
+    res.data.pets.forEach(pet => {
+      if (pet.gender === 'Jantan') {
+        petGenders.value.push('mars')
+      } else if (pet.gender === 'Betina') {
+        petGenders.value.push('venus')
+      }
+    })
+  })
+}
+
+const autoCompleteHandler = (e) => {
+  const userData = e.target.value
+  if (userData) {
+    filteredCities.value = cities.value.filter((city) => city.toLowerCase().includes(userData.toLowerCase()))
+    autoCompleteListVisible.value = true
+  } else {
+    autoCompleteListVisible.value = false
+  }
+}
+
+const useAutocomplete = (e) => {
+  const choosenCity = e.target.innerText.trim()
+  locInput.value = choosenCity
+  autoCompleteListVisible.value = false
+}
+
+const searchPetHandler = (e) => {
+  if (queryInput.value && locInput.value) {
+    axios.get(`${CONFIG.API_BASE_URL}/pets/${queryInput.value}/${locInput.value}`).then(res => {
+      pets.value = res.data.pets
+      res.data.pets.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
+    })
+  }
+}
 </script>
 
 <template>
-  <main class="grid grid-cols-profile gap-5 min-h-[80vh]">
-    <aside class="shadow-andopt py-4 px-5 h-fit rounded-md">
+  <main class="grid grid-cols-profile min-h-[80vh]">
+    <aside class="shadow-andopt py-7 px-8 h-fit rounded-md">
         <form>
             <section class="flex justify-between items-center text-sm">
                 <h2 class="font-semibold">Terapkan Filter</h2>
@@ -17,16 +72,112 @@ const route = useRoute()
             <section>
                 <div>
                     <h3 class="text-sm font-medium">Berdasarkan Kategori</h3>
-                    <div>
-                        <div class="flex items-center mb-4">
-                            <input id="category-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm" >
-                            <label for="category-1" class="ml-2 text-sm font-medium">Kucing</label>
-                        </div>
+                    <div class="mt-4 flex flex-col gap-3">
+                        <label for="cat" class="text-sm flex items-center gap-2">
+                            <input id="cat" type="checkbox" class="w-3 h-3 rounded" >
+                            Kucing
+                        </label>
+                        <label for="dog" class="text-sm flex items-center gap-2">
+                            <input id="dog" type="checkbox" class="w-3 h-3 rounded" >
+                            Anjing
+                        </label>
+                        <label for="turtle" class="text-sm flex items-center gap-2">
+                            <input id="turtle" type="checkbox" class="w-3 h-3 rounded" >
+                            Kura-kura
+                        </label>
+                        <label for="bird" class="text-sm flex items-center gap-2">
+                            <input id="bird" type="checkbox" class="w-3 h-3 rounded" >
+                            Burung
+                        </label>
+                        <label for="rabbit" class="text-sm flex items-center gap-2">
+                            <input id="rabbit" type="checkbox" class="w-3 h-3 rounded" >
+                            Kelinci
+                        </label>
+                        <label for="fish" class="text-sm flex items-center gap-2">
+                            <input id="fish" type="checkbox" class="w-3 h-3 rounded" >
+                            Ikan
+                        </label>
                     </div>
                 </div>
             </section>
         </form>
 
     </aside>
+    <section class="flex flex-col gap-5 px-10 py-6">
+        <form class="text-black flex gap-3" @submit.prevent="searchPetHandler">
+            <div class="relative w-full">
+                <input
+                type="search"
+                class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white border border-darkGray text-sm"
+                placeholder="Masukkan jenis peliharaan"
+                v-model="queryInput"
+                />
+                <span
+                class="absolute top-0 left-0 h-full w-10 flex items-center justify-center text-darkGray"
+                ><font-awesome-icon icon="magnifying-glass"
+                /></span>
+            </div>
+            <div class="relative w-full">
+                <input
+                type="search"
+                class="py-2 pl-10 pr-3 w-full text-sm rounded focus:outline-0 bg-white border border-darkGray text-sm"
+                placeholder="Masukkan kota"
+                v-model="locInput"
+                @keyup="autoCompleteHandler"
+                />
+                <span
+                class="absolute top-0 left-0 h-full w-10 flex items-center justify-center text-darkGray"
+                ><font-awesome-icon icon="location-dot"
+                /></span>
+                <AutoCompleteList
+                :cities="filteredCities"
+                :clickHandler="useAutocomplete"
+                v-show="autoCompleteListVisible"
+                />
+            </div>
+            <button class="bg-primary text-white text-sm font-semibold w-1/5 rounded">
+                Cari
+            </button>
+        </form>
+        <div>
+            <p class="font-medium text-sm text-darkGray mb-4">
+                Menampilkan {{pets.length}} hasil pencarian
+            </p>
+            <div class="grid grid-cols-5 gap-5">
+                <div class="h-72 rounded-lg shadow-andopt" :id="pet.id" v-for="(pet, index) in pets" :key="pet.id">
+                <div class="relative h-3/6">
+                    <img
+                    :src="pet.imageUrls[0]"
+                    :alt="pet.name"
+                    class="w-full h-full object-cover rounded-t-lg"
+                    draggable="false"
+                    />
+                    <div class="flex gap-2 absolute top-2 right-2">
+                    <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                        <font-awesome-icon icon="heart" class="icon" />
+                    </button>
+                    </div>
+                </div>
+                <div class="py-3 px-4 h-3/6">
+                    <a :href="'pet/'+pet.id">
+                    <h4 class="font-semibold truncate">
+                        <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
+                        {{ pet.name }}
+                    </h4>
+                    </a>
+                    <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
+                    <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
+                    <p class="text-sm mt-3 truncate">
+                    <font-awesome-icon
+                        icon="location-dot"
+                        class="text-primary mr-1"
+                    />
+                    {{ pet.location.split(',')[0] }}
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
   </main>
 </template>
