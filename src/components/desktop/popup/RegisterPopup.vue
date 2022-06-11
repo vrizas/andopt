@@ -5,6 +5,7 @@ import axios from 'axios'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
 import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
 import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
+import CONFIG from '../../../config'
 
 const registerPopup = ref(null)
 const email = ref('')
@@ -40,7 +41,7 @@ const submitHandler = async (e) => {
           length: 2
         }).replace('_', '')
 
-        axios.post('http://localhost:4000/user/register', {
+        axios.post(`${CONFIG.API_BASE_URL}/user/register`, {
           uid: user.uid,
           username: randomName,
           email: email.value,

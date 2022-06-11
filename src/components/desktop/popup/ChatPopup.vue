@@ -6,6 +6,7 @@ import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, upd
 import axios from 'axios'
 import MessageItem from '../MessageItem.vue'
 import skeleton from '../../../assets/images/skeleton.jpg'
+import CONFIG from '../../../config'
 
 const props = defineProps({
   closeChatHandler: {
@@ -240,7 +241,7 @@ const changeActiveChatRoomHandler = (chatRoomId) => {
 
 onMounted(() => {
   if (props.chatPetId) {
-    axios.get(`http://localhost:4000/pet/${props.chatPetId}`)
+    axios.get(`${CONFIG.API_BASE_URL}/pet/${props.chatPetId}`)
       .then(({ data }) => {
         message.value = `Halo saya ingin bertanya, apakah boleh saya mengadopsi ${data.pet.name}?`
       })

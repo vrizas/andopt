@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import CONFIG from '../../../config'
 
 const pets = ref([])
 const petGenders = ref([])
@@ -14,9 +15,9 @@ onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
 
-    axios.get(`http://localhost:4000/user/${account.uid}`).then(res => {
+    axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}`).then(res => {
       const lastseens = res.data.user.lastseen
-      axios.get('http://localhost:4000/pets').then(res => {
+      axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
         lastseens.forEach(lastseen => {
           const result = res.data.pets.find(pet => pet.id === lastseen.pet_id)
           const pet = {
@@ -42,7 +43,7 @@ onAuthStateChanged(auth, (account) => {
 
 const deleteLastseenHandler = (lastseenId) => {
   user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-    axios.delete(`http://localhost:4000/user/${user.value.uid}/lastseen/${lastseenId}`, {
+    axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen/${lastseenId}`, {
       headers: {
         'X-Firebase-Token': idToken
       }

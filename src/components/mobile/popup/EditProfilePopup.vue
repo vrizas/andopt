@@ -5,6 +5,7 @@ import axios from 'axios'
 import { getAuth, updateProfile, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
+import CONFIG from '../../../config'
 
 const username = ref('')
 const newProfilePic = ref(null)
@@ -74,7 +75,7 @@ const updateProfileHandler = () => {
             photoURL: downloadURL
           }).then(() => {
             user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-              axios.put(`http://localhost:4000/user/${user.value.uid}`, {
+              axios.put(`${CONFIG.API_BASE_URL}/user/${user.value.uid}`, {
                 username: username.value || currentUsername.value,
                 photoURL: downloadURL
               }, {
@@ -106,7 +107,7 @@ const updateProfileHandler = () => {
       displayName: username.value || currentUsername.value
     }).then(() => {
       user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-        axios.put(`http://localhost:4000/user/${user.value.uid}`, {
+        axios.put(`${CONFIG.API_BASE_URL}/user/${user.value.uid}`, {
           username: username.value || currentUsername.value,
           photoURL: user.value.photoURL
         }, {
