@@ -6,6 +6,7 @@ import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, upd
 import axios from 'axios'
 import MessageItem from '../MessageItem.vue'
 import skeleton from '../../../assets/images/skeleton.jpg'
+import CONFIG from '../../../config'
 
 const props = defineProps({
   closeChatHandler: {
@@ -122,9 +123,11 @@ onAuthStateChanged(auth, (account) => {
           activeChatRoomId.value = currentChatRoomId
           activeMember.value = memberChatRooms.value.find(member => member.id === props.chatReceiverUid)
         } else {
-          activeMemberId.value = memberChatRooms.value[0].id
-          activeChatRoomId.value = chatRooms.value[0].id
-          activeMember.value = memberChatRooms.value[0]
+          if (memberChatRooms.value.length > 0) {
+            activeMemberId.value = memberChatRooms.value[0].id
+            activeChatRoomId.value = chatRooms.value[0].id
+            activeMember.value = memberChatRooms.value[0]
+          }
         }
       })
 
@@ -240,7 +243,7 @@ const changeActiveChatRoomHandler = (chatRoomId) => {
 
 onMounted(() => {
   if (props.chatPetId) {
-    axios.get(`http://localhost:4000/pet/${props.chatPetId}`)
+    axios.get(`${CONFIG.API_BASE_URL}/pet/${props.chatPetId}`)
       .then(({ data }) => {
         message.value = `Halo saya ingin bertanya, apakah boleh saya mengadopsi ${data.pet.name}?`
       })

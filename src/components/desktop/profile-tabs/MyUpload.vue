@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import CONFIG from '../../../config'
 
 const pets = ref([])
 const petGenders = ref([])
@@ -15,7 +16,7 @@ onAuthStateChanged(auth, (account) => {
   }
 })
 
-axios.get('http://localhost:4000/pets').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
   pets.value = res.data.pets.filter(pet => pet.user_uid === user.value.uid)
   pets.value.forEach(pet => {
     if (pet.gender === 'Jantan') {

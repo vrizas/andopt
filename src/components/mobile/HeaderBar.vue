@@ -27,7 +27,7 @@ defineProps({
                 </button>
             </nav>
         </header>
-        <header class="px-3 py-2 gap-6 flex justify-between bg-primary" v-else>
+        <header class="px-3 py-2 gap-6 flex justify-between bg-primary max-w-[600px]" v-else>
             <div class="relative w-4/5">
                 <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan"/>
                 <span class="absolute top-0 left-0 h-full w-10 text-sm flex items-center justify-center text-darkGray">
