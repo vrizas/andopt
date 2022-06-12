@@ -162,7 +162,7 @@ const sendMessageHandler = async () => {
   const { uid } = user.value
 
   try {
-    const messagesLength = messages.value.length
+    const messagesLength = message.value.length
 
     if (messagesLength > 0) {
       let messageIdExist = false
