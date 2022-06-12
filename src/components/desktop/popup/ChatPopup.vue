@@ -193,7 +193,7 @@ const sendMessageHandler = async () => {
           messages: [{
             sender_uid: uid,
             text: message.value,
-            createdAt: serverTimestamp()
+            createdAt: new Date()
           }]
         })
       }
