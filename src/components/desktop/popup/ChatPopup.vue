@@ -184,7 +184,7 @@ const sendMessageHandler = async () => {
           messages: arrayUnion({
             sender_uid: uid,
             text: message.value,
-            createdAt: new Date()
+            createdAt: Date.now()
           })
         })
       } else {
@@ -193,7 +193,7 @@ const sendMessageHandler = async () => {
           messages: [{
             sender_uid: uid,
             text: message.value,
-            createdAt: new Date()
+            createdAt: Date.now()
           }]
         })
       }
