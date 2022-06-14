@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 import cities from '../../utils/cities'
@@ -104,7 +105,7 @@ const searchPetHandler = (e) => {
         Peliharaan Berdasarkan Kategori
       </h3>
       <div class="grid grid-cols-4 gap-5">
-        <a href="/search/kucing" class="h-72 rounded-lg shadow-andopt">
+        <RouterLink to="/search/kucing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/cat.jpg"
@@ -116,8 +117,8 @@ const searchPetHandler = (e) => {
           <h4 class="font-medium py-2 h-1/6 flex items-center justify-center">
             Kucing
           </h4>
-        </a>
-        <a href="/search/anjing" class="h-72 rounded-lg shadow-andopt">
+        </RouterLink>
+        <RouterLink to="/search/anjing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/dog.jpg"
@@ -129,8 +130,8 @@ const searchPetHandler = (e) => {
           <h4 class="font-medium py-2 h-1/6 flex items-center justify-center">
             Anjing
           </h4>
-        </a>
-        <a href="/search/burung" class="h-72 rounded-lg shadow-andopt">
+        </RouterLink>
+        <RouterLink to="/search/burung" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
               src="../../assets/images/bird.jpg"
@@ -142,8 +143,8 @@ const searchPetHandler = (e) => {
           <h4 class="font-medium py-2 h-1/6 flex items-center justify-center">
             Burung
           </h4>
-        </a>
-        <a href="/search" class="h-72 rounded-lg shadow-andopt">
+        </RouterLink>
+        <RouterLink to="/search" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6 flex justify-center items-center">
             <img
               src="../../assets/icons/paw-gray.svg"
@@ -155,7 +156,7 @@ const searchPetHandler = (e) => {
           <h4 class="font-medium py-2 h-1/6 flex items-center justify-center">
             Lainnya
           </h4>
-        </a>
+        </RouterLink>
       </div>
     </section>
     <section class="pt-10 pb-1 px-10">
@@ -178,12 +179,12 @@ const searchPetHandler = (e) => {
             </div>
           </div>
           <div class="py-3 px-4 h-3/6">
-            <a :href="'pet/'+pet.id">
+            <RouterLink :to="'/pet/'+pet.id">
               <h4 class="font-semibold truncate">
                 <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
                 {{ pet.name }}
               </h4>
-            </a>
+            </RouterLink>
             <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
             <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
             <p class="text-sm mt-3 truncate">
@@ -218,9 +219,9 @@ const searchPetHandler = (e) => {
               in saepe praesentium similique quidem tenetur labore recusandae
               expedita, amet ratione. Numquam.
             </p>
-            <a href="#" class="text-sm text-primary mt-4 inline-block"
-              >Baca Selengkapnya</a
-            >
+            <RouterLink to="#" class="text-sm text-primary mt-4 inline-block">
+              Baca Selengkapnya
+            </RouterLink>
           </div>
         </div>
       </div>

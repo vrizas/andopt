@@ -59,7 +59,6 @@ const submitHandler = async (e) => {
           url: 'http://localhost:3000/'
         })
           .then(() => {
-            alert('Email verifikasi telah dikirim')
           }).catch(() => {
             alert('Terjadi kesalahan')
           })

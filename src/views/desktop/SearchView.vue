@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
 import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
 import cities from '../../utils/cities'
@@ -239,18 +239,18 @@ const filterPetHandler = (e, species) => {
                     </div>
                 </div>
                 <div class="py-3 px-4 h-3/6">
-                    <a :href="'pet/'+pet.id">
-                    <h4 class="font-semibold truncate">
+                    <RouterLink :to="'/pet/'+pet.id">
+                      <h4 class="font-semibold truncate">
                         <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
                         {{ pet.name }}
-                    </h4>
-                    </a>
+                      </h4>
+                    </RouterLink>
                     <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
                     <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
                     <p class="text-sm mt-3 truncate">
                     <font-awesome-icon
-                        icon="location-dot"
-                        class="text-primary mr-1"
+                      icon="location-dot"
+                      class="text-primary mr-1"
                     />
                     {{ pet.location.split(',')[0] }}
                     </p>

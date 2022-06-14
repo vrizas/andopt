@@ -100,17 +100,24 @@ onAuthStateChanged(auth, (account) => {
 
       const memberChatRoomsTemp = []
       memberChatRoomsUnsub = onSnapshot(collection(db, 'users'), (snapshot) => {
+        const chatMember = []
         chatRooms.value.forEach((chatRoom) => {
           chatRoom.members.forEach((member) => {
             if (member !== account.uid) {
-              snapshot.forEach((doc) => {
-                if (member.includes(doc.id)) {
-                  memberChatRoomsTemp.push({
-                    id: doc.id,
-                    chat_room_id: chatRoom.id,
-                    ...doc.data()
-                  })
-                }
+              chatMember.push({
+                chat_room_id: chatRoom.id,
+                user_uid: member
+              })
+            }
+          })
+        })
+        snapshot.forEach((doc) => {
+          chatMember.forEach((member) => {
+            if (doc.id === member.user_uid) {
+              memberChatRoomsTemp.push({
+                id: member.user_uid,
+                chat_room_id: member.chat_room_id,
+                ...doc.data()
               })
             }
           })
@@ -263,9 +270,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="chat fixed bottom-5 right-5 shadow-andopt rounded-md flex w-1/3 h-2/4 bg-white text-sm translate-y-full" ref="chatPopup">
-        <aside class="w-1/3 overflow-y-auto">
-            <button class="flex items-center px-3 py-2 rounded-l-md rounded-bl-none w-full text-left" :class="{'bg-primaryFilter':activeMemberId===member.id}" v-for="(member, index) in memberChatRooms" :key="member.id" @click="changeActiveChatRoomHandler(chatRooms[index].id)">
+    <div class="chat fixed bottom-5 right-5 shadow-andopt rounded-md flex w-[450px] h-2/4 bg-white text-sm translate-y-full" ref="chatPopup">
+        <aside class="w-1/3 overflow-y-auto truncate">
+            <button class="flex items-center px-3 py-2 rounded-l-md rounded-bl-none w-full text-left" :class="{'bg-primaryFilter':activeMemberId===member.id}" v-for="member in memberChatRooms" :key="member.id" @click="changeActiveChatRoomHandler(member.chat_room_id)">
                 <img
                 :src="member.photoURL"
                 class="rounded-full w-7 h-7 mr-3"

@@ -79,12 +79,12 @@ const deleteLastseenHandler = (lastseenId) => {
               </div>
             </div>
             <div class="py-3 px-4 h-3/6">
-              <a :href="'/pet/'+pet.id">
+              <RouterLink :to="'/pet/'+pet.id">
                 <h4 class="font-semibold truncate">
                   <font-awesome-icon :icon="petGenders[index]" class="text-darkGray text-2xl mr-1" />
                   {{ pet.name }}
                 </h4>
-              </a>
+              </RouterLink>
               <p class="text-sm mt-1 truncate">{{ pet.type.name }} {{pet.type.race}}</p>
               <p class="text-sm mt-1 font-medium text-darkGray truncate">{{ pet.age }}</p>
               <p class="text-sm mt-3 truncate">
