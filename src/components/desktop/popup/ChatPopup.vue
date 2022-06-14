@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import gsap from 'gsap'
 import { getAuth, onAuthStateChanged } from '@firebase/auth'
-import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore'
 import axios from 'axios'
 import MessageItem from '../MessageItem.vue'
 import skeleton from '../../../assets/images/skeleton.jpg'
@@ -48,6 +48,10 @@ watch(
   { deep: true }
 )
 
+function convertTZ (date, tzString) {
+  return new Date((typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', { timeZone: tzString }))
+}
+
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
@@ -76,20 +80,17 @@ onAuthStateChanged(auth, (account) => {
           }
         }
       })
-      chatRoomsTemp.sort((a, b) => {
-        return b.createdAt - a.createdAt
-      })
 
       if (!chatRoomExist && props.chatReceiverUid) {
         const result = addDoc(chatRoomsCollection, {
           members: [account.uid, props.chatReceiverUid],
-          createdAt: serverTimestamp()
+          createdAt: convertTZ(new Date(), 'Asia/Jakarta')
         })
 
         chatRoomsTemp.push({
           id: result.id,
           members: [account.uid, props.chatReceiverUid],
-          createdAt: serverTimestamp()
+          createdAt: convertTZ(new Date(), 'Asia/Jakarta')
         })
 
         chatRoomExist = true
@@ -99,21 +100,20 @@ onAuthStateChanged(auth, (account) => {
 
       const memberChatRoomsTemp = []
       memberChatRoomsUnsub = onSnapshot(collection(db, 'users'), (snapshot) => {
-        const receiversUid = []
         chatRooms.value.forEach((chatRoom) => {
           chatRoom.members.forEach((member) => {
             if (member !== account.uid) {
-              receiversUid.push(member)
+              snapshot.forEach((doc) => {
+                if (member.includes(doc.id)) {
+                  memberChatRoomsTemp.push({
+                    id: doc.id,
+                    chat_room_id: chatRoom.id,
+                    ...doc.data()
+                  })
+                }
+              })
             }
           })
-        })
-        snapshot.forEach((doc) => {
-          if (receiversUid.includes(doc.id)) {
-            memberChatRoomsTemp.push({
-              id: doc.id,
-              ...doc.data()
-            })
-          }
         })
 
         memberChatRooms.value = memberChatRoomsTemp
@@ -184,7 +184,7 @@ const sendMessageHandler = async () => {
           messages: arrayUnion({
             sender_uid: uid,
             text: message.value,
-            createdAt: serverTimestamp()
+            createdAt: convertTZ(new Date(), 'Asia/Jakarta')
           })
         })
       } else {
@@ -193,7 +193,7 @@ const sendMessageHandler = async () => {
           messages: [{
             sender_uid: uid,
             text: message.value,
-            createdAt: new Date()
+            createdAt: convertTZ(new Date(), 'Asia/Jakarta')
           }]
         })
       }
