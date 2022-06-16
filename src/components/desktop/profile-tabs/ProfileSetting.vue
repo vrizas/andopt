@@ -188,7 +188,7 @@ const signOutHandler = () => {
           </div>
           <div class="w-full text-left">
             <button
-              class="bg-primary text-white px-3 py-2 w-1/5 rounded-md font-semibold mt-4"
+              class="bg-primary text-white px-5 py-2 rounded-md font-semibold mt-4"
             >
               Simpan
             </button>
