@@ -50,10 +50,10 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
   <div class="sticky top-0 z-[999]">
     <header class="bg-primary flex justify-between align-center py-3 px-10" v-if="isLoggedIn">
       <h1 class="relative text-white text-xs font-semibold font-montserrat">
-        <a href="/">
+        <RouterLink to="/">
           <img src="../../assets/logo-white-without-text.svg" width="50" alt="Andopt Logo">
           <span class="absolute bottom-[-5px] right-[-20px]">Andopt</span>
-        </a>
+        </RouterLink>
       </h1>
       <nav class="flex gap-8 items-center text-xs">
         <RouterLink to="/" class="text-xl text-white">
