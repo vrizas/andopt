@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import LoginPopupVue from './popup/LoginPopup.vue'
-import RegisterPopupVue from './popup/RegisterPopup.vue'
+import LoginPopupVue from '../user/popup/LoginPopup.vue'
+import RegisterPopupVue from '../user/popup/RegisterPopup.vue'
 import DropdownProfile from './DropdownProfile.vue'
-import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
-import ChatPopup from './popup/ChatPopup.vue'
+import ResetPasswordPopupVue from '../user/popup/ResetPasswordPopup.vue'
+import ChatPopup from '../user/popup/ChatPopup.vue'
 
 defineProps({
   isLoggedIn: {
@@ -51,7 +51,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
     <header class="bg-primary flex justify-between align-center py-3 px-10" v-if="isLoggedIn">
       <h1 class="relative text-white text-xs font-semibold font-montserrat">
         <RouterLink to="/">
-          <img src="../../assets/logo-white-without-text.svg" width="50" alt="Andopt Logo">
+          <img src="../../../assets/logo-white-without-text.svg" width="50" alt="Andopt Logo">
           <span class="absolute bottom-[-5px] right-[-20px]">Andopt</span>
         </RouterLink>
       </h1>
@@ -70,10 +70,10 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
       v-else
     >
       <h1 class="relative text-white text-xs font-semibold font-montserrat">
-        <a href="/">
-          <img src="../../assets/logo-white-without-text.svg" width="50" alt="Andopt Logo">
+        <RouterLink to="/">
+          <img src="../../../assets/logo-white-without-text.svg" width="50" alt="Andopt Logo">
           <span class="absolute bottom-[-5px] right-[-20px]">Andopt</span>
-        </a>
+        </RouterLink>
       </h1>
       <nav class="flex gap-5 items-center text-sm">
         <a

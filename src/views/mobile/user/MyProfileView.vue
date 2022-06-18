@@ -5,10 +5,10 @@ import {
 import { RouterLink, useRouter } from 'vue-router'
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth'
 
-import defaultProfilePic from '../../assets/images/default-profile-pic.png'
-import EditProfilePopupVue from '../../components/mobile/popup/EditProfilePopup.vue'
-import EditPasswordPopupVue from '../../components/mobile/popup/EditPasswordPopup.vue'
-import HeaderBar from '../../components/mobile/HeaderBar.vue'
+import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
+import EditProfilePopupVue from '../../../components/mobile/popup/EditProfilePopup.vue'
+import EditPasswordPopupVue from '../../../components/mobile/popup/EditPasswordPopup.vue'
+import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
 const router = useRouter()
 const auth = getAuth()

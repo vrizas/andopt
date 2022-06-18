@@ -2,7 +2,11 @@
 import { gsap } from 'gsap'
 import { ref, onMounted } from 'vue'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import CONFIG from '../../../../config'
 
+const router = useRouter()
 const email = ref('')
 const password = ref('')
 const passwordEl = ref(null)
@@ -22,6 +26,15 @@ const submitHandler = async (e) => {
     signInWithEmailAndPassword(auth, email.value, password.value)
       .then((userCredential) => {
         const { user } = userCredential
+        axios.get(`${CONFIG.API_BASE_URL}/user/${user.uid}`).then(res => {
+          if (res.data.user.role === 'spv') {
+            router.push('/spv')
+          } else if (res.data.user.role === 'admin') {
+            router.push('/admin')
+          } else {
+            closePopup()
+          }
+        })
         closePopup()
       })
       .catch((error) => {

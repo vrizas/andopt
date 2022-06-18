@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
-import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
-import cities from '../../utils/cities'
-import CONFIG from '../../config'
+import AutoCompleteList from '../../../components/desktop/user/AutoCompleteList.vue'
+import cities from '../../../utils/cities'
+import CONFIG from '../../../config'
 
 const queryInput = ref('')
 const locInput = ref('')
@@ -108,7 +108,7 @@ const searchPetHandler = (e) => {
         <RouterLink to="/search/kucing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
-              src="../../assets/images/cat.jpg"
+              src="../../../assets/images/cat.jpg"
               alt="kucing silver"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"
@@ -121,7 +121,7 @@ const searchPetHandler = (e) => {
         <RouterLink to="/search/anjing" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
-              src="../../assets/images/dog.jpg"
+              src="../../../assets/images/dog.jpg"
               alt="anjing duduk di lantai"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"
@@ -134,7 +134,7 @@ const searchPetHandler = (e) => {
         <RouterLink to="/search/burung" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6">
             <img
-              src="../../assets/images/bird.jpg"
+              src="../../../assets/images/bird.jpg"
               alt="lovebird di ranting pohon"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"
@@ -147,7 +147,7 @@ const searchPetHandler = (e) => {
         <RouterLink to="/search" class="h-72 rounded-lg shadow-andopt">
           <div class="h-5/6 flex justify-center items-center">
             <img
-              src="../../assets/icons/paw-gray.svg"
+              src="../../../assets/icons/paw-gray.svg"
               alt="ikon paw"
               class="w-2/3 h-2/3"
               draggable="false"
@@ -204,7 +204,7 @@ const searchPetHandler = (e) => {
         <div class="h-[450px] rounded-lg shadow-andopt">
           <div class="h-3/6">
             <img
-              src="../../assets/images/cat.jpg"
+              src="../../../assets/images/cat.jpg"
               alt="kucing silver"
               class="w-full h-full object-cover rounded-t-lg"
               draggable="false"

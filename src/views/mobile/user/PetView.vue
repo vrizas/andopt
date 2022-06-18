@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { useRoute } from 'vue-router'
-import HeaderBar from '../../components/mobile/HeaderBar.vue'
-import CONFIG from '../../config'
+import HeaderBar from '../../../components/mobile/HeaderBar.vue'
+import CONFIG from '../../../config'
 
 const route = useRoute()
 const tabImages = ref(null)
@@ -14,6 +14,7 @@ const scrollMin = ref(0)
 const pet = ref(null)
 const petGender = ref('')
 const writerUsername = ref('')
+const writerUser = ref(null)
 const isLoggedIn = ref(false)
 const auth = getAuth()
 
@@ -33,8 +34,8 @@ axios.get(`${CONFIG.API_BASE_URL}/pet/${route.params.id}`).then(res => {
     petGender.value = 'venus'
   }
 
-  axios.get(`${CONFIG.API_BASE_URL}/user/${pet.value.user_uid}`).then(res => {
-    writerUsername.value = res.data.user.username
+  axios.get(`${CONFIG.API_BASE_URL}/user/${pet.value.user_uid}`).then(response => {
+    writerUser.value = response.data.user
   })
 })
 
@@ -60,9 +61,9 @@ const scrollLeftHandler = () => {
         <HeaderBar :isLoggedIn="isLoggedIn" />
         <main class="pb-24 flex flex-col gap-8 bg-white">
             <section class="relative flex flex-col gap-5 items-center">
-                <img :src="pet.imageUrls[activeTabImage]" alt="cat" class="w-full h-72 object-cover rounded-lg">
-                <div class="relative" v-if="pet.imageUrls.length > 1">
-                    <div class="flex gap-4 overflow-x-auto w-screen px-10 tab-images" ref="tabImages">
+                <img :src="pet?.imageUrls[activeTabImage]" alt="cat" class="w-full h-72 object-cover rounded-lg">
+                <div class="relative" v-if="pet?.imageUrls.length > 1">
+                    <div class="flex gap-4 overflow-x-auto max-w-[600px] px-10 tab-images" ref="tabImages">
                         <img :src="url" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
                     </div>
                     <button class="absolute right-0 top-1/2 translate-y-[-50%] bg-lightGray w-8 h-8 rounded-full flex items-center justify-center" @click="scrollRightHandler">
@@ -75,29 +76,29 @@ const scrollLeftHandler = () => {
             </section>
             <section class="px-4">
                 <h2 class="font-bold text-xl">
-                    {{ pet.name }}
+                    {{ pet?.name }}
                     <font-awesome-icon :icon="petGender" class="text-darkGray text-2xl ml-3" />
                 </h2>
-                <p class="mt-2">{{ pet.type.name }} {{pet.type.race}}</p>
-                <p class="font-medium text-darkGray mt-1">{{ pet.age }}</p>
+                <p class="mt-2">{{ pet?.type.name }} {{pet?.type.race}}</p>
+                <p class="font-medium text-darkGray mt-1">{{ pet?.age }}</p>
                 <p class="mt-3">
                     <font-awesome-icon
                     icon="location-dot"
                     class="text-primary mr-1"
                     />
-                    {{ pet.location }}
+                    {{ pet?.location }}
                 </p>
                 <div class="mt-8">
                     <h3 class="font-medium text-lg text-darkGray mb-2">Deskripsi</h3>
-                    <p class="text-sm">{{ pet.desc }}</p>
+                    <p class="text-sm">{{ pet?.desc }}</p>
                 </div>
             </section>
             <aside class="shadow-andopt w-full py-8 px-6 rounded-lg h-fit">
                 <h4 class="text-xs text-medium text-darkGray mb-2">Pemilik</h4>
-                <a href="#" class="flex gap-2 items-center font-semibold truncate">
-                    <img src="../../assets/images/default-profile-pic.png" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
-                    {{ writerUsername }}
-                </a>
+                <RouterLink :to="'/profile/'+writerUser?.id" class="flex gap-2 items-center font-semibold truncate">
+                    <img :src="writerUser?.photoURL" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
+                    {{ writerUser?.username }}
+                </RouterLink>
                 <hr class="my-4 text-lightGray">
                 <div class="flex flex-col gap-3">
                     <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md">

@@ -26,6 +26,7 @@ module.exports = {
       lightGray: '#C4C4C4',
       white: '#F9F9F9',
       black: '#191919',
+      'soft-black': '#23282D',
       pink: '#EF144A',
       darkFilter: 'rgba(0, 0, 0, 0.5)',
       primaryFilter: 'rgba(47, 149, 127, 0.2)',

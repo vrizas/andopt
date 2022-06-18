@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import HeaderBarHome from '../../components/mobile/HeaderBarHome.vue'
-import CONFIG from '../../config'
+import HeaderBarHome from '../../../components/mobile/HeaderBarHome.vue'
+import CONFIG from '../../../config'
 
 const pets = ref([])
 const petGenders = ref([])
@@ -50,7 +50,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
             <RouterLink to="#" class="h-60 rounded-md shadow-andopt">
               <div class="h-5/6">
                 <img
-                  src="../../assets/images/cat.jpg"
+                  src="../../../assets/images/cat.jpg"
                   alt="kucing silver"
                   class="w-full h-full object-cover rounded-t-md"
                   draggable="false"
@@ -63,7 +63,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
             <RouterLink to="#" class="h-60 rounded-lg shadow-andopt">
               <div class="h-5/6">
                 <img
-                  src="../../assets/images/dog.jpg"
+                  src="../../../assets/images/dog.jpg"
                   alt="anjing duduk di lantai"
                   class="w-full h-full object-cover rounded-t-lg"
                   draggable="false"
@@ -76,7 +76,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
             <RouterLink to="#" class="h-60 rounded-lg shadow-andopt">
               <div class="h-5/6">
                 <img
-                  src="../../assets/images/bird.jpg"
+                  src="../../../assets/images/bird.jpg"
                   alt="lovebird di ranting pohon"
                   class="w-full h-full object-cover rounded-t-lg"
                   draggable="false"
@@ -89,7 +89,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
             <RouterLink to="#" class="h-60 rounded-lg shadow-andopt">
               <div class="h-5/6 flex justify-center items-center">
                 <img
-                  src="../../assets/icons/paw-gray.svg"
+                  src="../../../assets/icons/paw-gray.svg"
                   alt="ikon paw"
                   class="w-2/3 h-2/3"
                   draggable="false"
@@ -139,7 +139,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets/newest`).then(res => {
             <div class="h-[380px] rounded-lg shadow-andopt">
               <div class="h-3/6">
                 <img
-                  src="../../assets/images/cat.jpg"
+                  src="../../../assets/images/cat.jpg"
                   alt="kucing silver"
                   class="w-full h-full object-cover rounded-t-lg"
                   draggable="false"

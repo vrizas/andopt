@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { getAuth, signOut } from 'firebase/auth'
-import defaultProfilePic from '../../assets/images/default-profile-pic.png'
+import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
 
 const isMenuOpen = ref(false)
 const router = useRouter()

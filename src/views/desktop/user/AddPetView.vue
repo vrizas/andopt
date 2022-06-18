@@ -1,15 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import DropdownList from '../../components/desktop/DropdownList.vue'
-import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
+import DropdownList from '../../../components/desktop/DropdownList.vue'
+import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { nanoid } from 'nanoid'
-import cities from '../../utils/cities'
-import HeaderBar from '../../components/mobile/HeaderBar.vue'
-import CONFIG from '../../config'
+import cities from '../../../utils/cities'
+import CONFIG from '../../../config'
 
 const petName = ref('')
 const petType = ref('')
@@ -46,15 +45,11 @@ const router = useRouter()
 const storage = getStorage()
 const auth = getAuth()
 const user = ref(null)
-const isLoggedIn = ref(false)
-
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
-    isLoggedIn.value = true
   } else {
     user.value = null
-    isLoggedIn.value = false
     window.location.href = '/#/login'
   }
 })
@@ -73,7 +68,6 @@ const uploadImageAsPromise = (file, isTemp = true) => {
     uploadTask.on('state_changed',
       (snapshot) => {
         const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-        console.log(`Proses unggah ${progress}%`)
         flashMessage.value = 'Proses unggah sedang berlangsung...'
       },
       (error) => {
@@ -196,101 +190,98 @@ const submitHandler = async () => {
 </script>
 
 <template>
-  <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" />
-    <main class="pt-5 pb-24 px-4 bg-white">
-      <h2 class="text-darkGray font-semibold mb-5">Unggah Hewan Peliharaan</h2>
-      <form class="flex gap-10 flex-col">
-        <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-darkGray rounded-lg text-darkGray text-2xl flex items-center justify-center" v-if="!isUploaded">
-          <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
-          <font-awesome-icon icon="file-circle-plus" />
-        </label>
-        <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-secondary rounded-lg text-darkGray text-2xl flex items-center justify-center" v-else>
-          <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
-          <font-awesome-icon icon="images" class="text-secondary" />
-        </label>
-        <div class="flex flex-col gap-4 text-sm ">
-          <div class="flex flex-col gap-1">
-            <label for="petName">Nama Hewan <span class="text-pink">*</span></label>
-            <input
-                class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                type="text"
-                v-model="petName"
-                id="petName"
-                required
-            />
-          </div>
-          <div class="flex flex-col gap-1">
-            <label for="petType">Jenis Hewan <span class="text-pink">*</span></label>
-            <input
-                class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                type="text"
-                v-model="petType"
-                id="petType"
-                placeholder="Kucing"
-                required
-            />
-          </div>
-          <div class="flex flex-col gap-1">
-            <label for="petRace">Ras Hewan</label>
-            <input
-                class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                type="text"
-                v-model="petRace"
-                id="petRace"
-                placeholder="Persia"
-            />
-          </div>
-          <div class="flex flex-col gap-1">
-            <label for="petAge">Umur Hewan</label>
-            <div class="flex gap-5">
-              <input class="py-3 px-4 bg-white border-b-2 border-primary text-sm" type="number" v-model="petAgeNumber" id="petAge">
-              <span class="relative w-[120px]" @mouseenter="openDropdownAgeUnit = true" @mouseleave="openDropdownAgeUnit = false">
+  <main class="py-8 px-10 bg-white">
+    <h2 class="text-darkGray text-lg font-semibold mb-5">Unggah Hewan Peliharaan</h2>
+    <form class="flex gap-10">
+      <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-darkGray rounded-lg text-darkGray text-2xl flex items-center justify-center" v-if="!isUploaded">
+        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
+        <font-awesome-icon icon="file-circle-plus" />
+      </label>
+      <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-secondary rounded-lg text-darkGray text-2xl flex items-center justify-center" v-else>
+        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
+        <font-awesome-icon icon="images" class="text-secondary" />
+      </label>
+      <div class="flex flex-col gap-4 text-sm w-1/2">
+        <div class="flex flex-col gap-1">
+          <label for="petName">Nama Hewan <span class="text-pink">*</span></label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            type="text"
+            v-model="petName"
+            id="petName"
+            required
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="petType">Jenis Hewan <span class="text-pink">*</span></label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            type="text"
+            v-model="petType"
+            id="petType"
+            placeholder="Kucing"
+            required
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="petRace">Ras Hewan</label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            type="text"
+            v-model="petRace"
+            id="petRace"
+            placeholder="Persia"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="petAge">Umur Hewan</label>
+          <div class="flex gap-5">
+            <input class="py-3 px-4 bg-white border-b-2 border-primary text-sm" type="number" v-model="petAgeNumber" id="petAge">
+            <span class="relative w-[120px]" @mouseenter="openDropdownAgeUnit = true" @mouseleave="openDropdownAgeUnit = false">
               <input class="w-full py-3 px-4 bg-white border-b-2 border-primary text-sm cursor-pointer" type="text" v-model="petAgeUnit" disabled>
               <font-awesome-icon icon="chevron-down" class="absolute right-[15px] top-1/2 translate-y-[-50%]" />
               <DropdownList :list="ageUnits" :clickHandler="selectAgeUnitHandler" v-show="openDropdownAgeUnit" />
-              </span>
+            </span>
           </div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label for="petGender">Jenis Kelamin <span class="text-pink">*</span></label>
-            <span class="relative w-[150px]" @mouseenter="openDropdownPetGender = true" @mouseleave="openDropdownPetGender = false">
-                <input class="w-full py-3 px-4 bg-white border-b-2 border-primary text-sm cursor-pointer" type="text" v-model="petGender" disabled>
-                <font-awesome-icon icon="chevron-down" class="absolute right-[15px] top-1/2 translate-y-[-50%]" />
-                <DropdownList :list="petGenders" :clickHandler="selectPetGenderHandler" v-show="openDropdownPetGender" />
-                </span>
-            </div>
-          <div class="flex flex-col gap-1">
-            <label for="petLoc">Lokasi <span class="text-pink">*</span></label>
-            <input
-                class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                type="text"
-                v-model="petLoc"
-                id="petLoc"
-                @keyup="autoCompleteHandler"
-                required
-            />
-            <div class="relative">
-              <AutoCompleteList
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="petGender">Jenis Kelamin <span class="text-pink">*</span></label>
+          <span class="relative w-[150px]" @mouseenter="openDropdownPetGender = true" @mouseleave="openDropdownPetGender = false">
+              <input class="w-full py-3 px-4 bg-white border-b-2 border-primary text-sm cursor-pointer" type="text" v-model="petGender" disabled>
+              <font-awesome-icon icon="chevron-down" class="absolute right-[15px] top-1/2 translate-y-[-50%]" />
+              <DropdownList :list="petGenders" :clickHandler="selectPetGenderHandler" v-show="openDropdownPetGender" />
+            </span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="petLoc">Lokasi <span class="text-pink">*</span></label>
+          <input
+            class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
+            type="text"
+            v-model="petLoc"
+            id="petLoc"
+            @keyup="autoCompleteHandler"
+            required
+          />
+          <div class="relative">
+            <AutoCompleteList
               :cities="filteredCities"
               :clickHandler="useAutocomplete"
               v-show="autoCompleteListVisible"
-              />
-            </div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label for="petDesc">Deskripsi Hewan <span class="text-pink">*</span></label>
-            <textarea id="petDesc" cols="30" rows="5" class="py-3 px-4 bg-white border-b-2 border-primary text-sm" v-model="petDesc" required></textarea>
-          </div>
-          <div class="flex gap-3 mt-5">
-            <button class="py-2 px-8 bg-primary text-white text-sm rounded-md" @click.prevent="submitHandler">Unggah</button>
-            <button @click="$router.go(-1)" class="py-2 px-8 bg-secondary text-white text-sm rounded-md">Kembali</button>
+            />
           </div>
         </div>
-      </form>
-      <div class="fixed bottom-[30px] bg-secondary text-white px-5 py-2 text-sm rounded-md" v-show="flashMessage.length > 0">
-        <p>{{ flashMessage }}</p>
+        <div class="flex flex-col gap-1">
+          <label for="petDesc">Deskripsi Hewan <span class="text-pink">*</span></label>
+          <textarea id="petDesc" cols="30" rows="5" class="py-3 px-4 bg-white border-b-2 border-primary text-sm" v-model="petDesc" required></textarea>
+        </div>
+        <div class="flex gap-3 mt-5">
+          <button class="py-2 px-8 bg-primary text-white text-sm rounded-md" @click.prevent="submitHandler">Unggah</button>
+          <button @click="$router.go(-1)" class="py-2 px-8 bg-secondary text-white text-sm rounded-md">Kembali</button>
+        </div>
       </div>
-    </main>
-  </div>
+    </form>
+    <div class="fixed bottom-[30px] bg-secondary text-white px-5 py-2 text-sm rounded-md" v-show="flashMessage.length > 0">
+      <p>{{ flashMessage }}</p>
+    </div>
+  </main>
 </template>

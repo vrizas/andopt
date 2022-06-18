@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import CONFIG from '../../config'
+import CONFIG from '../../../config'
 
 const pets = ref([])
 const petGenders = ref([])
@@ -15,18 +15,20 @@ onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
 
-    axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}`).then(res => {
-      const lastseens = res.data.user.lastseen
-      axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
-        lastseens.forEach(lastseen => {
-          const result = res.data.pets.find(pet => pet.id === lastseen.pet_id)
-          const pet = {
-            lastseen_id: lastseen.id,
-            ...result
-          }
-          if (result) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}/likes`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        res.data.likes.forEach(like => {
+          axios.get(`${CONFIG.API_BASE_URL}/pet/${like.pet_id}`).then(response => {
+            const pet = {
+              pet_id: like.pet_id,
+              ...response.data.pet
+            }
             pets.value.push(pet)
-          }
+          })
         })
 
         pets.value.forEach(pet => {
@@ -42,21 +44,15 @@ onAuthStateChanged(auth, (account) => {
 })
 
 const deleteLastseenHandler = (lastseenId) => {
-  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-    axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen/${lastseenId}`, {
-      headers: {
-        'X-Firebase-Token': idToken
-      }
-    }).then(res => {
-      pets.value = pets.value.filter(pet => pet.lastseen_id !== lastseenId)
-    })
+  axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen/${lastseenId}`).then(res => {
+    pets.value = pets.value.filter(pet => pet.lastseen_id !== lastseenId)
   })
 }
 </script>
 
 <template>
     <section class="shadow-andopt py-4 px-6 rounded-md">
-      <h2 class="text-primary text-lg font-semibold mb-4">Terakhir Dilihat</h2>
+      <h2 class="text-primary text-lg font-semibold mb-4">Favorit Saya</h2>
       <RouterLink to="/" class="inline-block h-72 w-full px-5 text-center text-sm font-semibold rounded-lg shadow-andopt flex justify-center items-center" v-if="pets.length===0">
         Jelajahi Hewan Peliharaan Pilihanmu
       </RouterLink>
@@ -70,9 +66,6 @@ const deleteLastseenHandler = (lastseenId) => {
               draggable="false"
               />
               <div class="flex gap-2 absolute top-2 right-2">
-                <button class="trashButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" @click="deleteLastseenHandler(pet.lastseen_id)">
-                  <font-awesome-icon icon="trash" class="icon" />
-                </button>
                 <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
                   <font-awesome-icon icon="heart" class="icon" />
                 </button>

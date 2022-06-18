@@ -4,8 +4,8 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
 import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
-import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
-import CONFIG from '../../../config'
+import defaultProfilePic from '../../../../assets/images/default-profile-pic.png'
+import CONFIG from '../../../../config'
 
 const registerPopup = ref(null)
 const email = ref('')

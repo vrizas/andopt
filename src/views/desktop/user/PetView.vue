@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
-import { useRoute } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import skeleton from '../../assets/images/skeleton.jpg'
-import CONFIG from '../../config'
+import skeleton from '../../../assets/images/skeleton.jpg'
+import CONFIG from '../../../config'
 
 defineProps({
   openChatHandler: {
@@ -156,10 +156,10 @@ const unlikePetHandler = () => {
     </section>
     <aside class="shadow-andopt w-1/4 py-8 px-6 rounded-lg h-fit">
       <h4 class="text-xs text-medium text-darkGray mb-2">Pemilik</h4>
-      <a href="#" class="flex gap-2 items-center font-semibold truncate">
+      <RouterLink :to="'/profile/'+writerUser?.id" class="flex gap-2 items-center font-semibold truncate">
           <img :src="writerUser?.photoURL || skeleton" alt="profil" class="w-8 h-8 rounded-full object-cover" draggable="false">
           {{ writerUser?.username }}
-      </a>
+      </RouterLink>
       <hr class="my-4 text-lightGray">
       <div class="flex flex-col gap-3">
         <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, '')">

@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
-import AutoCompleteList from '../../components/desktop/AutoCompleteList.vue'
-import cities from '../../utils/cities'
-import CONFIG from '../../config'
+import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
+import cities from '../../../utils/cities'
+import CONFIG from '../../../config'
 
 const route = useRoute()
 const newLoc = route.params.location.replace(/_/g, '.')

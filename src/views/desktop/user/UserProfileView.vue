@@ -1,9 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
-import defaultProfilePic from '../../assets/images/default-profile-pic.png'
+import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
 import axios from 'axios'
-import CONFIG from '../../config'
+import CONFIG from '../../../config'
+
+defineProps({
+  openChatHandler: {
+    type: Function,
+    default: () => {}
+  }
+})
 
 const route = useRoute()
 const user = ref(null)
@@ -34,7 +41,7 @@ axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
       <img :src="user?.photoURL || defaultProfilePic" alt="profil" class="w-16 h-16 rounded-full object-cover" draggable="false">
       <div class="flex flex-col gap-2">
         <h2 class="font-semibold text-lg">{{user?.username}}</h2>
-        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, '')">
+        <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(route.params.id, '')">
           <font-awesome-icon icon="comment-dots" class="mr-1" />
           Chat
         </button>

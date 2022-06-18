@@ -5,8 +5,8 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth'
 import { getFirestore, collection, getDocs, addDoc, setDoc, doc, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore'
 import axios from 'axios'
 import MessageItem from '../MessageItem.vue'
-import skeleton from '../../../assets/images/skeleton.jpg'
-import CONFIG from '../../../config'
+import skeleton from '../../../../assets/images/skeleton.jpg'
+import CONFIG from '../../../../config'
 
 const props = defineProps({
   closeChatHandler: {

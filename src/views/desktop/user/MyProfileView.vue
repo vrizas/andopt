@@ -1,10 +1,10 @@
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useRoute } from 'vue-router'
-import ProfileSetting from '../../components/desktop/profile-tabs/ProfileSetting.vue'
-import MyUpload from '../../components/desktop/profile-tabs/MyUpload.vue'
-import MyFavorite from '../../components/desktop/profile-tabs/MyFavorite.vue'
-import LastSeen from '../../components/desktop/profile-tabs/LastSeen.vue'
+import ProfileSetting from '../../../components/desktop/profile-tabs/ProfileSetting.vue'
+import MyUpload from '../../../components/desktop/profile-tabs/MyUpload.vue'
+import MyFavorite from '../../../components/desktop/profile-tabs/MyFavorite.vue'
+import LastSeen from '../../../components/desktop/profile-tabs/LastSeen.vue'
 
 const route = useRoute()
 const auth = getAuth()
