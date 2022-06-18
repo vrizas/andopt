@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import CONFIG from '../../../config'
+import CONFIG from '../../../../config'
 
 const pets = ref([])
 const petGenders = ref([])

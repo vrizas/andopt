@@ -8,6 +8,7 @@ import { gsap } from 'gsap'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import UserHeaderBar from './components/desktop/user/HeaderBar.vue'
 import SpvHeaderBar from './components/desktop/spv/HeaderBar.vue'
+import AdminHeaderBar from './components/desktop/admin/HeaderBar.vue'
 import FooterBar from './components/desktop/user/FooterBar.vue'
 import EmailVerificationPopup from './components/desktop/user/popup/EmailVerificationPopup.vue'
 import CONFIG from './config'
@@ -28,6 +29,7 @@ onAuthStateChanged(auth, (user) => {
     })
   } else {
     isLoggedIn.value = false
+    isEmailVerified.value = null
   }
 })
 
@@ -52,10 +54,11 @@ const closeChatHandler = () => {
 
 <template>
   <div>
-    <UserHeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" v-if="route.name!=='spv-panel'" />
+    <UserHeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" v-if="route.name!=='spv-panel'&&route.name!=='admin-panel'" />
     <SpvHeaderBar v-else-if="route.name==='spv-panel'&&userRole==='spv'" />
+    <AdminHeaderBar v-else-if="route.name==='admin-panel'&&userRole==='admin'" />
     <RouterView :openChatHandler="openChatHandler" />
-    <FooterBar :isLoggedIn="isLoggedIn" v-if="route.name!=='spv-panel'" />
+    <FooterBar :isLoggedIn="isLoggedIn" v-if="route.name!=='spv-panel'&&route.name!=='admin-panel'" />
     <EmailVerificationPopup v-if="isEmailVerified === false" />
   </div>
 </template>

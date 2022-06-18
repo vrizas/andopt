@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import DropdownList from '../../../components/desktop/DropdownList.vue'
-import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
+import DropdownList from '../../../components/desktop/user/DropdownList.vue'
+import AutoCompleteList from '../../../components/desktop/user/AutoCompleteList.vue'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
@@ -194,11 +194,11 @@ const submitHandler = async () => {
     <h2 class="text-darkGray text-lg font-semibold mb-5">Unggah Hewan Peliharaan</h2>
     <form class="flex gap-10">
       <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-darkGray rounded-lg text-darkGray text-2xl flex items-center justify-center" v-if="!isUploaded">
-        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
+        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple accept="image/*" required>
         <font-awesome-icon icon="file-circle-plus" />
       </label>
       <label for="petImages" class="w-[250px] h-[250px] border border-dashed border-secondary rounded-lg text-darkGray text-2xl flex items-center justify-center" v-else>
-        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple required>
+        <input type="file" id="petImages" class="hidden" @change="onFileChange" multiple accept="image/*" required>
         <font-awesome-icon icon="images" class="text-secondary" />
       </label>
       <div class="flex flex-col gap-4 text-sm w-1/2">

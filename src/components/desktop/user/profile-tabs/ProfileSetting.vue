@@ -6,8 +6,8 @@ import { RouterLink, RouterView, useRouter } from 'vue-router'
 
 import { getAuth, signOut, updateProfile, updatePassword, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
-import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
-import CONFIG from '../../../config'
+import defaultProfilePic from '../../../../assets/images/default-profile-pic.png'
+import CONFIG from '../../../../config'
 
 const usernameIn = ref('')
 const newProfilePic = ref(null)
@@ -139,8 +139,12 @@ const changePasswordHandler = () => {
 
   updatePassword(user, newPassword.value).then(() => {
     alert('Password berhasil diubah')
+    newPassword.value = ''
+    confirmNewPassword.value = ''
+    newPasswordEl.value.style.borderColor = '#2F957F'
+    confirmNewPasswordEl.value.style.borderColor = '#2F957F'
   }).catch((error) => {
-    alert(error.message)
+    console.log(error)
   })
 }
 
