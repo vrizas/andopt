@@ -15,31 +15,92 @@ onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
 
-    axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}`).then(res => {
-      const lastseens = res.data.user.lastseen
-      axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
-        lastseens.forEach(lastseen => {
-          const result = res.data.pets.find(pet => pet.id === lastseen.pet_id)
-          const pet = {
-            lastseen_id: lastseen.id,
-            ...result
-          }
-          if (result) {
-            pets.value.push(pet)
-          }
-        })
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        const lastseens = res.data.user.lastseen
+        axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
+          const data = []
+          lastseens.forEach(lastseen => {
+            const result = res.data.pets.find(pet => pet.id === lastseen.pet_id)
+            const pet = {
+              lastseen_id: lastseen.id,
+              ...result
+            }
 
-        pets.value.forEach(pet => {
-          if (pet.gender === 'Jantan') {
-            petGenders.value.push('mars')
-          } else if (pet.gender === 'Betina') {
-            petGenders.value.push('venus')
-          }
+            if (result) {
+              data.push(pet)
+            }
+          })
+
+          axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}/likes`, {
+            headers: {
+              'X-Firebase-Token': idToken
+            }
+          }).then(res => {
+            data.forEach(pet => {
+              pet.isLiked = !!res.data.likes.find(like => like.pet_id === pet.id)
+              pet.like_id = res.data.likes.find(like => like.pet_id === pet.id)?.id
+            })
+
+            pets.value = data
+          })
+
+          pets.value.forEach(pet => {
+            if (pet.gender === 'Jantan') {
+              petGenders.value.push('mars')
+            } else if (pet.gender === 'Betina') {
+              petGenders.value.push('venus')
+            }
+          })
         })
       })
     })
   }
 })
+
+const likePetHandler = (petId) => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${petId}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value.forEach((pet) => {
+          if (pet.id === petId) {
+            pet.isLiked = true
+            pet.like_id = res.data.like.id
+          }
+        })
+      })
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = (petId, likeId) => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${petId}/like/${likeId}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      pets.value.forEach((pet) => {
+        if (pet.id === petId) {
+          pet.isLiked = false
+          pet.like_id = null
+        }
+      })
+    })
+  })
+}
 
 const deleteLastseenHandler = (lastseenId) => {
   user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
@@ -73,7 +134,10 @@ const deleteLastseenHandler = (lastseenId) => {
                 <button class="trashButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" @click="deleteLastseenHandler(pet.lastseen_id)">
                   <font-awesome-icon icon="trash" class="icon" />
                 </button>
-                <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
+                  <font-awesome-icon icon="heart" class="icon" />
+                </button>
+                <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else @click="likePetHandler(pet.id)">
                   <font-awesome-icon icon="heart" class="icon" />
                 </button>
               </div>

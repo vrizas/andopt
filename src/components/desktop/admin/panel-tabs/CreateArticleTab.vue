@@ -9,7 +9,7 @@ import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, de
 
 const title = ref('')
 const content = ref('')
-const type = ref('')
+const category = ref('')
 const newArticlePhoto = ref(null)
 const flashMessage = ref('')
 const isUploaded = ref(false)
@@ -88,7 +88,7 @@ const submitHandler = () => {
       id: articleId,
       title: title.value,
       content: content.value,
-      type: type.value,
+      category: category.value,
       imageUrl
     }
 
@@ -102,7 +102,7 @@ const submitHandler = () => {
     flashMessage.value = ''
     title.value = ''
     content.value = ''
-    type.value = ''
+    category.value = ''
     newArticlePhoto.value = null
     isUploaded.value = false
   }).catch(function (error) {
@@ -129,19 +129,19 @@ const submitHandler = () => {
                         <label for="title">Judul Artikel</label>
                         <input
                             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                            type="title"
+                            type="text"
                             v-model="title"
                             id="title"
                             required
                         />
                     </div>
                     <div class="flex flex-col gap-1 w-full">
-                        <label for="title">Tipe Artikel</label>
+                        <label for="title">Kategori Artikel</label>
                         <input
                             class="py-3 px-4 bg-white border-b-2 border-primary text-sm"
-                            type="type"
-                            v-model="type"
-                            id="type"
+                            type="text"
+                            v-model="category"
+                            id="category"
                             required
                         />
                     </div>

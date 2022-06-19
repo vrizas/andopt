@@ -13,19 +13,71 @@ const auth = getAuth()
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
+    axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
+      const data = res.data.pets.filter(pet => pet.user_uid === user.value.uid)
+      user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+        axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}/likes`, {
+          headers: {
+            'X-Firebase-Token': idToken
+          }
+        }).then(res => {
+          data.forEach(pet => {
+            pet.isLiked = !!res.data.likes.find(like => like.pet_id === pet.id)
+            pet.like_id = res.data.likes.find(like => like.pet_id === pet.id)?.id
+          })
+          pets.value = data
+        })
+      })
+      pets.value.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
+      })
+    })
   }
 })
 
-axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
-  pets.value = res.data.pets.filter(pet => pet.user_uid === user.value.uid)
-  pets.value.forEach(pet => {
-    if (pet.gender === 'Jantan') {
-      petGenders.value.push('mars')
-    } else if (pet.gender === 'Betina') {
-      petGenders.value.push('venus')
-    }
+const likePetHandler = (petId) => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${petId}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value.forEach((pet) => {
+          if (pet.id === petId) {
+            pet.isLiked = true
+            pet.like_id = res.data.like.id
+          }
+        })
+      })
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = (petId, likeId) => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${petId}/like/${likeId}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      pets.value.forEach((pet) => {
+        if (pet.id === petId) {
+          pet.isLiked = false
+          pet.like_id = null
+        }
+      })
+    })
   })
-})
+}
 
 </script>
 
@@ -48,7 +100,10 @@ axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
                 draggable="false"
                 />
                 <div class="flex gap-2 absolute top-2 right-2">
-                  <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                  <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
+                    <font-awesome-icon icon="heart" class="icon" />
+                  </button>
+                  <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else @click="likePetHandler(pet.id)">
                     <font-awesome-icon icon="heart" class="icon" />
                   </button>
                 </div>

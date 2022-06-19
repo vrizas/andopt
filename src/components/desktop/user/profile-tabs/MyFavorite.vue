@@ -24,7 +24,8 @@ onAuthStateChanged(auth, (account) => {
         res.data.likes.forEach(like => {
           axios.get(`${CONFIG.API_BASE_URL}/pet/${like.pet_id}`).then(response => {
             const pet = {
-              pet_id: like.pet_id,
+              like_id: like.id,
+              isLiked: true,
               ...response.data.pet
             }
             pets.value.push(pet)
@@ -42,6 +43,46 @@ onAuthStateChanged(auth, (account) => {
     })
   }
 })
+
+const likePetHandler = (petId) => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${petId}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value.forEach((pet) => {
+          if (pet.id === petId) {
+            pet.isLiked = true
+            pet.like_id = res.data.like.id
+          }
+        })
+      })
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = (petId, likeId) => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${petId}/like/${likeId}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      pets.value.forEach((pet) => {
+        if (pet.id === petId) {
+          pet.isLiked = false
+          pet.like_id = null
+        }
+      })
+    })
+  })
+}
 
 const deleteLastseenHandler = (lastseenId) => {
   axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen/${lastseenId}`).then(res => {
@@ -66,7 +107,10 @@ const deleteLastseenHandler = (lastseenId) => {
               draggable="false"
               />
               <div class="flex gap-2 absolute top-2 right-2">
-                <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
+                  <font-awesome-icon icon="heart" class="icon" />
+                </button>
+                <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else @click="likePetHandler(pet.id)">
                   <font-awesome-icon icon="heart" class="icon" />
                 </button>
               </div>
