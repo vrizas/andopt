@@ -98,7 +98,7 @@ const submitHandler = () => {
       }
     }
 
-    await axios.post(`http://localhost:4000/admin/${user.value.uid}/articles`, article, config)
+    await axios.post(`${CONFIG.API_BASE_URL}/admin/${user.value.uid}/articles`, article, config)
     flashMessage.value = ''
     title.value = ''
     content.value = ''

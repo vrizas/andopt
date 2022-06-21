@@ -79,6 +79,20 @@ const unlikePetHandler = (petId, likeId) => {
   })
 }
 
+const deleteUploadedPetHandler = (petId) => {
+  const userConfirm = confirm('Apakah anda yakin ingin menghapus unggahan ini?')
+  if (userConfirm) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/pet/${petId}`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value = pets.value.filter(pet => pet.id !== petId)
+      })
+    })
+  }
+}
 </script>
 
 <template>
@@ -100,6 +114,9 @@ const unlikePetHandler = (petId, likeId) => {
                 draggable="false"
                 />
                 <div class="flex gap-2 absolute top-2 right-2">
+                  <button class="trashButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" @click="deleteUploadedPetHandler(pet.id)">
+                    <font-awesome-icon icon="trash" class="icon" />
+                  </button>
                   <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
                     <font-awesome-icon icon="heart" class="icon" />
                   </button>

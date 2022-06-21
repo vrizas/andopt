@@ -8,6 +8,7 @@ import UserListTab from '../../../components/desktop/admin/panel-tabs/UserListTa
 import SettingsTab from '../../../components/desktop/admin/panel-tabs/SettingsTab.vue'
 import CONFIG from '../../../config'
 import CreateArticleTab from '../../../components/desktop/admin/panel-tabs/CreateArticleTab.vue'
+import ArticleListTab from '../../../components/desktop/admin/panel-tabs/ArticleListTab.vue'
 
 const route = useRoute()
 const auth = getAuth()
@@ -25,7 +26,7 @@ onAuthStateChanged(auth, (user) => {
 })
 
 const showIndicator = () => {
-  return !route.params.tab || (route.params.tab === 'user' && route.params.secTab === 'list') || (route.params.tab === 'article' && route.params.secTab === 'create') || route.params.tab === 'settings'
+  return !route.params.tab || (route.params.tab === 'user' && route.params.secTab === 'list') || (route.params.tab === 'article' && route.params.secTab === 'list') || (route.params.tab === 'article' && route.params.secTab === 'create') || route.params.tab === 'settings'
 }
 </script>
 
@@ -48,11 +49,18 @@ const showIndicator = () => {
             /></span>
             <span>Daftar Pengguna</span>
           </RouterLink>
-          <RouterLink to="/admin/article/create" class="relative flex items-center gap-3 px-3 py-2 font-medium" :class="{active:route.params.tab==='article'&&route.params.secTab==='create'}">
+          <RouterLink to="/admin/article/list" class="relative flex items-center gap-3 px-3 py-2 font-medium" :class="{active:route.params.tab==='article'&&route.params.secTab==='list'}">
             <span
               class="w-8 h-8 rounded-full bg-white text-secondary flex items-center justify-center text-sm"
               ><font-awesome-icon icon="newspaper"
             /></span>
+            <span>Artikel Saya</span>
+          </RouterLink>
+          <RouterLink to="/admin/article/create" class="relative flex items-center gap-3 px-3 py-2 font-medium" :class="{active:route.params.tab==='article'&&route.params.secTab==='create'}">
+            <span class="w-8 h-8 rounded-full bg-white text-secondary flex items-center justify-center text-[10px]">
+              <font-awesome-icon icon="newspaper"/>
+              <font-awesome-icon icon="plus" />
+            </span>
             <span>Buat Artikel</span>
           </RouterLink>
           <RouterLink to="/admin/settings" class="relative flex items-center gap-3 px-3 py-2 font-medium" :class="{active:route.params.tab==='settings'}">
@@ -75,6 +83,7 @@ const showIndicator = () => {
     <main class="ml-[250px]">
       <DashboardTab v-if="!route.params.tab" />
       <UserListTab v-else-if="route.params.tab==='user'&&route.params.secTab==='list'" />
+      <ArticleListTab v-else-if="route.params.tab==='article'&&route.params.secTab==='list'" />
       <CreateArticleTab v-else-if="route.params.tab==='article'&&route.params.secTab==='create'" />
       <SettingsTab v-else-if="route.params.tab==='settings'" />
     </main>
@@ -84,7 +93,7 @@ const showIndicator = () => {
 <style scoped>
 nav .indicator {
   width: 100%;
-  height: calc(100% / 4);
+  height: calc(100% / 5);
   background-color: #23282D;
   position: absolute;
   top: 0;
@@ -101,17 +110,22 @@ nav a.active span:nth-child(1) {
   color: #E06B2D;
 }
 nav a:nth-child(1).active ~ .indicator {
-  transform: translateY(calc(100% / 4 * 0));
+  transform: translateY(calc(100% / 5 * 0));
 }
 
 nav a:nth-child(2).active ~ .indicator {
-  transform: translateY(calc(100% / 4 * 4));
+  transform: translateY(calc(100% / 5 * 5));
 }
 
 nav a:nth-child(3).active ~ .indicator {
-  transform: translateY(calc(100% / 4 * 8));
+  transform: translateY(calc(100% / 5 * 10));
 }
+
 nav a:nth-child(4).active ~ .indicator {
-  transform: translateY(calc(100% / 4 * 12));
+  transform: translateY(calc(100% / 5 * 15));
+}
+
+nav a:nth-child(5).active ~ .indicator {
+  transform: translateY(calc(100% / 5 * 20));
 }
 </style>

@@ -60,7 +60,7 @@ onAuthStateChanged(auth, (account) => {
   }
 })
 
-axios.get('http://localhost:4000/articles').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/articles`).then(res => {
   let shouldSkip = false
   res.data.articles.forEach((article, index) => {
     if (index === 3) {
@@ -142,6 +142,10 @@ const unlikePetHandler = (petId, likeId) => {
       })
     })
   })
+}
+
+const showLoginPopup = () => {
+  window.location.hash = '/login'
 }
 </script>
 
@@ -266,7 +270,10 @@ const unlikePetHandler = (petId, likeId) => {
               <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
                 <font-awesome-icon icon="heart" class="icon" />
               </button>
-              <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else @click="likePetHandler(pet.id)">
+              <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else-if="pet.isLiked===false" @click="likePetHandler(pet.id)">
+                <font-awesome-icon icon="heart" class="icon" />
+              </button>
+              <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else-if="!user" @click="showLoginPopup">
                 <font-awesome-icon icon="heart" class="icon" />
               </button>
             </div>

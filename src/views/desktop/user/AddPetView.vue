@@ -182,7 +182,7 @@ const submitHandler = async () => {
 
     await axios.post(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/pet`, pet, config)
     flashMessage.value = ''
-    router.push('/my/pets')
+    router.push('/my/upload')
   }).catch(function (error) {
     alert(error.message)
   })

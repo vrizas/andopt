@@ -6,7 +6,7 @@ import CONFIG from '../../../../config'
 
 const admins = ref([])
 
-axios.get('http://localhost:4000/admins').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/admins`).then(res => {
   admins.value = res.data.admins
 })
 </script>

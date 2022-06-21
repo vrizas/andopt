@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import axios from 'axios'
+import CONFIG from '../../../../config'
 
 const auth = getAuth()
 const user = ref(null)
@@ -16,7 +17,7 @@ onAuthStateChanged(auth, (account) => {
 
 const admins = ref([])
 
-axios.get('http://localhost:4000/admins').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/admins`).then(res => {
   admins.value = res.data.admins
 })
 </script>

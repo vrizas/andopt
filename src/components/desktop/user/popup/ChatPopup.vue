@@ -123,7 +123,7 @@ onAuthStateChanged(auth, (account) => {
           })
         })
 
-        memberChatRooms.value = memberChatRoomsTemp
+        memberChatRooms.value = memberChatRoomsTemp.reverse()
 
         if (props.chatReceiverUid && chatRoomExist) {
           activeMemberId.value = props.chatReceiverUid

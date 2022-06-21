@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
-import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import AutoCompleteList from '../../../components/desktop/user/AutoCompleteList.vue'
 import cities from '../../../utils/cities'
 import CONFIG from '../../../config'
 
@@ -28,6 +29,18 @@ const turtleFilter = ref(false)
 const birdFilter = ref(false)
 const rabbitFilter = ref(false)
 const fishFilter = ref(false)
+
+const auth = getAuth()
+const user = ref(null)
+
+onAuthStateChanged(auth, (account) => {
+  if (account) {
+    user.value = account
+  } else {
+    user.value = null
+  }
+  getSearchData(route.params.query, route.params.location)
+})
 
 const getSearchData = (query, location) => {
   if (query && location) {
@@ -75,9 +88,22 @@ const getSearchData = (query, location) => {
       })
     })
   }
-}
 
-getSearchData(route.params.query, route.params.location)
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.get(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/likes`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value.forEach(pet => {
+          pet.isLiked = !!res.data.likes.find(like => like.pet_id === pet.id)
+          pet.like_id = res.data.likes.find(like => like.pet_id === pet.id)?.id
+        })
+      })
+    })
+  }
+}
 
 const autoCompleteHandler = (e) => {
   const userData = e.target.value
@@ -137,6 +163,50 @@ const filterPetHandler = (e, species) => {
     })
     getSearchData()
   }
+}
+
+const likePetHandler = (petId) => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${petId}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value.forEach((pet) => {
+          if (pet.id === petId) {
+            pet.isLiked = true
+            pet.like_id = res.data.like.id
+          }
+        })
+      })
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = (petId, likeId) => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${petId}/like/${likeId}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      pets.value.forEach((pet) => {
+        if (pet.id === petId) {
+          pet.isLiked = false
+          pet.like_id = null
+        }
+      })
+    })
+  })
+}
+
+const showLoginPopup = () => {
+  window.location.hash = '/login'
 }
 </script>
 
@@ -233,9 +303,15 @@ const filterPetHandler = (e, species) => {
                     draggable="false"
                     />
                     <div class="flex gap-2 absolute top-2 right-2">
-                    <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center">
+                      <button class="likeButton w-7 h-7 rounded-full bg-white text-pink flex justify-center items-center" v-if="pet.isLiked" @click="unlikePetHandler(pet.id, pet.like_id)">
                         <font-awesome-icon icon="heart" class="icon" />
-                    </button>
+                      </button>
+                      <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else-if="pet.isLiked===false" @click="likePetHandler(pet.id)">
+                        <font-awesome-icon icon="heart" class="icon" />
+                      </button>
+                      <button class="likeButton w-7 h-7 rounded-full bg-white text-lightGray flex justify-center items-center" v-else-if="!user" @click="showLoginPopup">
+                        <font-awesome-icon icon="heart" class="icon" />
+                      </button>
                     </div>
                 </div>
                 <div class="py-3 px-4 h-3/6">

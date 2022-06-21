@@ -12,6 +12,7 @@ import AdminHeaderBar from './components/desktop/admin/HeaderBar.vue'
 import FooterBar from './components/desktop/user/FooterBar.vue'
 import EmailVerificationPopup from './components/desktop/user/popup/EmailVerificationPopup.vue'
 import CONFIG from './config'
+import ConfirmModal from './components/desktop/user/ConfirmModal.vue'
 
 const route = useRoute()
 const isLoggedIn = ref(false)
@@ -49,7 +50,6 @@ const openChatHandler = (uid, petId) => {
 const closeChatHandler = () => {
   openChat.value = false
 }
-
 </script>
 
 <template>
