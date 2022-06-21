@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../../views/mobile/HomeView.vue'
+import HomeView from '../../views/mobile/user/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,7 +15,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/MyProfileView.vue')
+      component: () => import('../../views/mobile/user/MyProfileView.vue')
     },
     {
       path: '/my/pet/add',
@@ -23,7 +23,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/AddPetView.vue')
+      component: () => import('../../views/mobile/user/AddPetView.vue')
     },
     {
       path: '/my/favorites',
@@ -31,7 +31,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/MyFavoriteView.vue')
+      component: () => import('../../views/mobile/user/MyFavoriteView.vue')
     },
     {
       path: '/my/lastseen',
@@ -39,7 +39,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/LastSeen.vue')
+      component: () => import('../../views/mobile/user/LastSeen.vue')
     },
     {
       path: '/my/upload',
@@ -47,7 +47,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/MyUpload.vue')
+      component: () => import('../../views/mobile/user/MyUpload.vue')
     },
     {
       path: '/pet/:id',
@@ -55,7 +55,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../views/mobile/PetView.vue')
+      component: () => import('../../views/mobile/user/PetView.vue')
     }
   ]
 })

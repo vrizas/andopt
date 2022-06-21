@@ -26,6 +26,7 @@ onAuthStateChanged(auth, (user) => {
     isEmailVerified.value = emailVerified
   } else {
     isLoggedIn.value = false
+    isEmailVerified.value = null
   }
 })
 
