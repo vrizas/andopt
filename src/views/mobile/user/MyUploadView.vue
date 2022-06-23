@@ -7,38 +7,33 @@ import CONFIG from '../../../config'
 
 const pets = ref([])
 const petGenders = ref([])
-
-const auth = getAuth()
 const user = ref(null)
 
+const auth = getAuth()
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
-
-    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
-      axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}/likes`, {
-        headers: {
-          'X-Firebase-Token': idToken
-        }
-      }).then(res => {
-        res.data.likes.forEach(like => {
-          axios.get(`${CONFIG.API_BASE_URL}/pet/${like.pet_id}`).then(response => {
-            const pet = {
-              like_id: like.id,
-              isLiked: true,
-              ...response.data.pet
-            }
-            pets.value.push(pet)
-          })
-        })
-
-        pets.value.forEach(pet => {
-          if (pet.gender === 'Jantan') {
-            petGenders.value.push('mars')
-          } else if (pet.gender === 'Betina') {
-            petGenders.value.push('venus')
+    axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
+      const data = res.data.pets.filter(pet => pet.user_uid === user.value.uid)
+      user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+        axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}/likes`, {
+          headers: {
+            'X-Firebase-Token': idToken
           }
+        }).then(res => {
+          data.forEach(pet => {
+            pet.isLiked = !!res.data.likes.find(like => like.pet_id === pet.id)
+            pet.like_id = res.data.likes.find(like => like.pet_id === pet.id)?.id
+          })
+          pets.value = data
         })
+      })
+      pets.value.forEach(pet => {
+        if (pet.gender === 'Jantan') {
+          petGenders.value.push('mars')
+        } else if (pet.gender === 'Betina') {
+          petGenders.value.push('venus')
+        }
       })
     })
   }
@@ -84,19 +79,32 @@ const unlikePetHandler = (petId, likeId) => {
   })
 }
 
-const deleteLastseenHandler = (lastseenId) => {
-  axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen/${lastseenId}`).then(res => {
-    pets.value = pets.value.filter(pet => pet.lastseen_id !== lastseenId)
-  })
+const deleteUploadedPetHandler = (petId) => {
+  const userConfirm = confirm('Apakah anda yakin ingin menghapus unggahan ini?')
+  if (userConfirm) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.delete(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/pet/${petId}`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        pets.value = pets.value.filter(pet => pet.id !== petId)
+      })
+    })
+  }
 }
+
 </script>
 
 <template>
     <main class="pt-5 pb-24 px-4">
-      <h2 class="text-primary font-semibold mb-4">Favorit Saya</h2>
-      <section class="grid grid-cols-2 gap-3">
-          <RouterLink to="/" class="inline-block h-64 px-5 text-center text-xs font-semibold rounded-lg shadow-andopt flex justify-center items-center" v-if="pets.length===0">
-            Jelajahi Hewan Peliharaan Pilihanmu
+        <h2 class="text-primary font-semibold mb-4">Unggahan Saya</h2>
+        <div class="grid grid-cols-2 gap-3">
+          <RouterLink to="/my/pet/add" class="inline-block h-64 w-full rounded-lg shadow-andopt flex justify-center items-center" v-if="pets.length===0">
+              <span class="text-3xl text-secondary">
+                  <font-awesome-icon icon="cat" />
+                  <font-awesome-icon icon="plus" />
+              </span>
           </RouterLink>
           <div :to="'/pet/'+pet.id" class="h-64 rounded-md shadow-andopt" :id="pet.id" v-for="(pet, index) in pets" :key="pet.id">
             <div class="relative h-3/6">
@@ -133,6 +141,6 @@ const deleteLastseenHandler = (lastseenId) => {
               </p>
             </div>
           </div>
-      </section>
+        </div>
     </main>
 </template>

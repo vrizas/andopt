@@ -1,5 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import SearchBarPopup from './popup/SearchBarPopup.vue'
 
 defineProps({
   isLoggedIn: {
@@ -8,14 +10,26 @@ defineProps({
   }
 })
 
+const route = useRoute()
 const header = ref(null)
+const openSearchBar = ref(false)
+
+const showSearchBarPopup = () => {
+  openSearchBar.value = true
+}
+
+const closeSearchBarPopup = () => {
+  openSearchBar.value = false
+}
 
 onMounted(() => {
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 0) {
-      header.value.classList.add('bg-primary')
-    } else {
-      header.value.classList.remove('bg-primary')
+    if (route.name === 'home') {
+      if (window.scrollY > 0) {
+        header.value?.classList.add('bg-primary')
+      } else {
+        header.value?.classList.remove('bg-primary')
+      }
     }
   })
 })
@@ -24,8 +38,10 @@ onMounted(() => {
 <template>
     <div>
         <header class="px-3 py-2 w-full fixed z-10 top-0 flex justify-between max-w-[600px]" ref="header" v-if="isLoggedIn">
-            <div class="relative w-4/5">
-                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan"/>
+            <div class="relative w-[75%]">
+                <button class="w-full" @click="showSearchBarPopup">
+                  <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan" disabled/>
+                </button>
                 <span class="absolute top-0 left-0 h-full w-10 text-sm flex items-center justify-center text-darkGray">
                     <font-awesome-icon icon="magnifying-glass"/>
                 </span>
@@ -33,17 +49,20 @@ onMounted(() => {
             <nav class="flex gap-7 text-lg text-white">
                 <button class="relative">
                     <font-awesome-icon icon="bell" />
-                    <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span>
+                    <!-- <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span> -->
                 </button>
                 <button class="relative">
                     <font-awesome-icon icon="comment-dots" />
-                    <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span>
+                    <!-- <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span> -->
                 </button>
             </nav>
         </header>
-        <header class="px-3 py-2 w-full gap-6 fixed z-10 top-0 flex justify-between max-w-[600px]" ref="header" v-else>
-            <div class="relative w-4/5">
-                <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan"/>
+        <SearchBarPopup v-if="openSearchBar" :closeHandler="closeSearchBarPopup" />
+        <header class="px-3 py-2 w-full gap-6 fixed z-10 top-0 flex justify-between max-w-[600px]" ref="header" v-else-if="!isLoggedIn">
+            <div class="relative w-[75%]">
+                <button class="w-full" @click="showSearchBarPopup">
+                  <input type="search" class="py-2 pl-10 pr-3 w-full text-xs rounded focus:outline-0 bg-white" placeholder="Masukkan jenis peliharaan" disabled/>
+                </button>
                 <span class="absolute top-0 left-0 h-full w-10 text-sm flex items-center justify-center text-darkGray">
                     <font-awesome-icon icon="magnifying-glass"/>
                 </span>

@@ -53,10 +53,10 @@ const signOutHandler = () => {
     <HeaderBar :isLoggedIn="isLoggedIn" />
     <main class="pt-6 pb-24 px-4">
       <section class="flex items-center gap-4 relative">
-        <img :src="user.photoURL || defaultProfilePic" alt="profil" class="w-20 h-20 rounded-full object-cover" draggable="false">
+        <img :src="user?.photoURL || defaultProfilePic" alt="profil" class="w-20 h-20 rounded-full object-cover" draggable="false">
         <div class="truncate">
-          <h2 class="text-lg font-semibold">{{ user.displayName }}</h2>
-          <p class="text-darkGray mt-1">{{ user.email }}</p>
+          <h2 class="text-lg font-semibold">{{ user?.displayName }}</h2>
+          <p class="text-darkGray mt-1">{{ user?.email }}</p>
         </div>
         <a href="#/edit"
           class="text-xl text-darkGray absolute right-0 top-2"
@@ -76,7 +76,7 @@ const signOutHandler = () => {
             </span>
             Unggah Peliharaan
           </RouterLink>
-          <RouterLink to="#" class="flex items-center gap-3 py-2">
+          <RouterLink to="/my/favorites" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-pink rounded-full"
             >
@@ -84,7 +84,7 @@ const signOutHandler = () => {
             </span>
             Favorit Saya
           </RouterLink>
-          <RouterLink to="#" class="flex items-center gap-3 py-2">
+          <RouterLink to="/my/lastseen" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-darkGray rounded-full"
             >
@@ -92,7 +92,7 @@ const signOutHandler = () => {
             </span>
             Terakhir Dilihat
           </RouterLink>
-          <RouterLink to="#" class="flex items-center gap-3 py-2">
+          <RouterLink to="/my/upload" class="flex items-center gap-3 py-2">
             <span
               class="flex justify-center items-center text-white w-8 h-8 bg-secondary rounded-full"
             >

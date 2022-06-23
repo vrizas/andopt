@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import LoginPopupVue from './popup/LoginPopup.vue'
 import RegisterPopUpVue from './popup/RegisterPopup.vue'
 import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
@@ -8,6 +8,8 @@ import ResetPasswordPopupVue from './popup/ResetPasswordPopup.vue'
 defineProps({
   isLoggedIn: Boolean
 })
+
+const route = useRoute()
 
 const routes = {
   '/login': LoginPopupVue,
@@ -22,11 +24,15 @@ window.addEventListener('hashchange', () => {
 })
 
 const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
+
+const showIndicator = () => {
+  return route.name === 'home' || route.name === 'add-pet' || route.name === 'pet-favorites' || route.name === 'profile'
+}
 </script>
 
 <template>
   <div>
-    <nav class="flex justify-between w-full fixed bottom-0 left-0 right-0 bg-white text-lg shadow-andopt text-darkGray max-w-[600px] m-auto">
+    <nav class="flex justify-between w-full fixed z-50 bottom-0 left-0 right-0 bg-white text-lg shadow-andopt text-darkGray max-w-[600px] m-auto">
       <RouterLink
         to="/"
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
@@ -44,9 +50,9 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <span class="text-xs">Unggah</span>
       </RouterLink>
       <RouterLink
-        to="/favorite"
+        to="/my/favorites"
         class="flex flex-col justify-center items-center gap-1 w-1/4 h-14"
-        :class="{ active: $route.name === 'favorite' }"
+        :class="{ active: $route.name === 'pet-favorites' }"
       >
         <font-awesome-icon icon="heart" />
         <span class="text-xs">Favorit</span>
@@ -68,7 +74,7 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         <font-awesome-icon icon="user" />
         <span class="text-xs">Profil</span>
       </a>
-      <div class="indicator"></div>
+      <div class="indicator" v-show="showIndicator()"></div>
     </nav>
     <component :is="currentView" />
   </div>

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import DropdownList from '../../../components/desktop/DropdownList.vue'
-import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
+import DropdownList from '../../../components/desktop/user/DropdownList.vue'
+import AutoCompleteList from '../../../components/desktop/user/AutoCompleteList.vue'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'

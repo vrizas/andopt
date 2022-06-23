@@ -3,26 +3,58 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import HeaderBar from '../../../components/mobile/HeaderBar.vue'
+import skeleton from '../../../assets/images/skeleton.jpg'
 import CONFIG from '../../../config'
 
+defineProps({
+  openChatHandler: {
+    type: Function,
+    default: () => {}
+  }
+})
+
 const route = useRoute()
+const isLiked = ref(false)
+const likeId = ref('')
 const tabImages = ref(null)
 const activeTabImage = ref(0)
 const scrollAmount = ref(0)
 const scrollMin = ref(0)
 const pet = ref(null)
 const petGender = ref('')
-const writerUsername = ref('')
 const writerUser = ref(null)
-const isLoggedIn = ref(false)
 const auth = getAuth()
+const user = ref(null)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
-    isLoggedIn.value = true
+    user.value = account
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen`, {
+        pet_id: route.params.id
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      })
+
+      axios.get(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/likes`, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        res.data.likes.forEach(like => {
+          if (like.user_uid === user.value.uid) {
+            isLiked.value = true
+            likeId.value = like.id
+          }
+        })
+      })
+    }).catch(function (error) {
+      alert(error.message)
+    })
   } else {
-    isLoggedIn.value = false
+    user.value = null
   }
 })
 
@@ -54,6 +86,37 @@ const scrollLeftHandler = () => {
     behavior: 'smooth'
   })
 }
+
+const likePetHandler = () => {
+  if (user.value) {
+    user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+      axios.post(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/like`, {
+        user_uid: user.value.uid
+      }, {
+        headers: {
+          'X-Firebase-Token': idToken
+        }
+      }).then(res => {
+        isLiked.value = true
+        likeId.value = res.data.like.id
+      })
+    })
+  } else {
+    window.location.hash = '/login'
+  }
+}
+
+const unlikePetHandler = () => {
+  user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
+    axios.delete(`${CONFIG.API_BASE_URL}/pet/${route.params.id}/like/${likeId.value}`, {
+      headers: {
+        'X-Firebase-Token': idToken
+      }
+    }).then(res => {
+      isLiked.value = false
+    })
+  })
+}
 </script>
 
 <template>
@@ -61,7 +124,7 @@ const scrollLeftHandler = () => {
         <HeaderBar :isLoggedIn="isLoggedIn" />
         <main class="pb-24 flex flex-col gap-8 bg-white">
             <section class="relative flex flex-col gap-5 items-center">
-                <img :src="pet?.imageUrls[activeTabImage]" alt="cat" class="w-full h-72 object-cover rounded-lg">
+                <img :src="pet?.imageUrls[activeTabImage]" alt="cat" class="w-full h-72 object-cover">
                 <div class="relative" v-if="pet?.imageUrls.length > 1">
                     <div class="flex gap-4 overflow-x-auto max-w-[600px] px-10 tab-images" ref="tabImages">
                         <img :src="url" alt="cat" class="w-16 h-16 object-cover rounded-md cursor-pointer" :class="{active: activeTabImage === index}" v-for="(url, index) in pet.imageUrls" :key="url" @mouseenter="activeTabImage = index">
@@ -101,18 +164,22 @@ const scrollLeftHandler = () => {
                 </RouterLink>
                 <hr class="my-4 text-lightGray">
                 <div class="flex flex-col gap-3">
-                    <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
+                    <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, '')">
                         <font-awesome-icon icon="comment-dots" class="mr-1" />
                         Chat
                     </button>
-                    <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
+                    <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, route.params.id)">
                         <font-awesome-icon icon="paw" class="mr-1" />
                         Adopsi
                     </button>
-                    <button class="border border-pink text-pink hover:bg-pink hover:text-white font-semibold text-sm py-1 px-5 w-full rounded-md">
-                        <font-awesome-icon icon="heart" class="mr-1"/>
-                        Sukai
+                    <button class="border border-pink text-pink font-semibold text-sm py-1 px-5 w-full rounded-md" v-if="!isLiked" @click="likePetHandler">
+                      <font-awesome-icon icon="heart" class="mr-1"/>
+                      Sukai
                     </button>
+                    <button class="bg-pink text-white font-semibold text-sm py-1 px-5 w-full rounded-md" v-else @click="unlikePetHandler">
+                      <font-awesome-icon icon="heart" class="mr-1"/>
+                      Disukai
+        </button>
                 </div>
             </aside>
         </main>
