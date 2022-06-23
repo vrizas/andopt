@@ -7,7 +7,7 @@ import CONFIG from '../../../config'
 const route = useRoute()
 const article = ref(null)
 
-axios.get(`http://localhost:4000/article/${route.params.id}`).then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/article/${route.params.id}`).then(res => {
   article.value = res.data.article
 })
 </script>

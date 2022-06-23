@@ -6,7 +6,7 @@ import CONFIG from '../../../config'
 
 const articles = ref([])
 
-axios.get('http://localhost:4000/articles').then(res => {
+axios.get(`${CONFIG.API_BASE_URL}/articles`).then(res => {
   res.data.articles.forEach((article) => {
     articles.value.push(article)
   })

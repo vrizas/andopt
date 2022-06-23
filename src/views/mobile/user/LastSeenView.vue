@@ -4,17 +4,19 @@ import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import CONFIG from '../../../config'
+import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
 const pets = ref([])
 const petGenders = ref([])
 
 const auth = getAuth()
 const user = ref(null)
+const isLoggedIn = ref(false)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
-
+    isLoggedIn.value = true
     user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
       axios.get(`${CONFIG.API_BASE_URL}/user/${account.uid}`, {
         headers: {
@@ -59,6 +61,10 @@ onAuthStateChanged(auth, (account) => {
         })
       })
     })
+  } else {
+    user.value = null
+    isLoggedIn.value = false
+    window.location.href = '/#/login'
   }
 })
 
@@ -116,6 +122,8 @@ const deleteLastseenHandler = (lastseenId) => {
 </script>
 
 <template>
+  <div>
+    <HeaderBar :isLoggedIn="isLoggedIn" />
     <main class="pt-5 pb-24 px-4">
       <h2 class="text-primary font-semibold mb-4">Terakhir Dilihat</h2>
       <div class="grid grid-cols-2 gap-3">
@@ -159,4 +167,5 @@ const deleteLastseenHandler = (lastseenId) => {
         </div>
       </div>
     </main>
+  </div>
 </template>

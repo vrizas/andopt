@@ -4,15 +4,18 @@ import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import CONFIG from '../../../config'
+import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
 const pets = ref([])
 const petGenders = ref([])
 const user = ref(null)
-
 const auth = getAuth()
+const isLoggedIn = ref(false)
+
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
+    isLoggedIn.value = true
     axios.get(`${CONFIG.API_BASE_URL}/pets`).then(res => {
       const data = res.data.pets.filter(pet => pet.user_uid === user.value.uid)
       user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
@@ -36,6 +39,10 @@ onAuthStateChanged(auth, (account) => {
         }
       })
     })
+  } else {
+    user.value = null
+    isLoggedIn.value = false
+    window.location.href = '/#/login'
   }
 })
 
@@ -97,6 +104,8 @@ const deleteUploadedPetHandler = (petId) => {
 </script>
 
 <template>
+  <div>
+    <HeaderBar :isLoggedIn="isLoggedIn" />
     <main class="pt-5 pb-24 px-4">
         <h2 class="text-primary font-semibold mb-4">Unggahan Saya</h2>
         <div class="grid grid-cols-2 gap-3">
@@ -143,4 +152,5 @@ const deleteUploadedPetHandler = (petId) => {
           </div>
         </div>
     </main>
+  </div>
 </template>
