@@ -56,9 +56,9 @@ const currentView = computed(() => routes[currentPath.value.slice(1) || '/'])
         </RouterLink>
       </h1>
       <nav class="flex gap-8 items-center text-xs">
-        <RouterLink to="/" class="text-xl text-white">
+        <!-- <RouterLink to="/" class="text-xl text-white">
           <font-awesome-icon icon="bell" />
-        </RouterLink>
+        </RouterLink> -->
         <button class="text-xl text-white" @click="openChatHandler('', '')">
           <font-awesome-icon icon="comment-dots" />
         </button>

@@ -8,6 +8,25 @@ import cities from '../../../utils/cities'
 import CONFIG from '../../../config'
 import HeaderBarHome from '../../../components/mobile/HeaderBarHome.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const queryInput = ref('')
 const locInput = ref('')
 const autoCompleteListVisible = ref(false)
@@ -155,7 +174,7 @@ const showLoginPopup = () => {
 
 <template>
   <div>
-    <HeaderBarHome :isLoggedIn="isLoggedIn" />
+    <HeaderBarHome :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
     <main class="pb-24">
       <section class="relative h-[40vh] text-white bg-[url('../assets/images/hero-small.jpg')] bg-cover bg-center bg-no-repeat bg-fixed">
         <div class="absolute top-0 left-0 h-full w-full bg-darkFilter"></div>

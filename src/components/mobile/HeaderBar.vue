@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import SearchBarPopup from './popup/SearchBarPopup.vue'
+import ChatPopup from './popup/ChatPopup.vue'
 
 defineProps({
   isLoggedIn: {
@@ -14,6 +15,26 @@ defineProps({
   locInput: {
     type: String,
     default: ''
+  },
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  },
+  showChatRoom: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -29,7 +50,7 @@ const closeSearchBarPopup = () => {
 </script>
 
 <template>
-    <div class="sticky top-0 z-40">
+    <div class="sticky top-0 z-50">
         <header class="px-3 py-2 flex justify-between bg-primary max-w-[600px]" v-if="isLoggedIn">
             <div class="relative w-[75%]">
                 <button class="w-full" @click="showSearchBarPopup">
@@ -40,17 +61,18 @@ const closeSearchBarPopup = () => {
                 </span>
             </div>
             <nav class="flex gap-7 text-lg text-white">
-                <button class="relative">
+                <!-- <button class="relative">
                     <font-awesome-icon icon="bell" />
-                    <!-- <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span> -->
-                </button>
-                <button class="relative">
+                    <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span>
+                </button> -->
+                <button class="relative" @click="openChatHandler('', '')">
                     <font-awesome-icon icon="comment-dots" />
                     <!-- <span class="absolute top-[2px] right-[-5px] text-[11px] leading-none bg-pink rounded-full h-3 w-3 flex justify-center items-center">1</span> -->
                 </button>
             </nav>
         </header>
         <SearchBarPopup v-if="openSearchBar" :closeHandler="closeSearchBarPopup" :query="queryInput" :loc="locInput" />
+        <ChatPopup :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" :showChatRoom="showChatRoom" v-if="openChat && isLoggedIn" />
         <header class="px-3 py-2 gap-6 flex justify-between bg-primary max-w-[600px]" v-else-if="!isLoggedIn">
             <div class="relative w-[75%]">
                 <button class="w-full" @click="showSearchBarPopup">

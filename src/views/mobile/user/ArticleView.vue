@@ -6,6 +6,25 @@ import axios from 'axios'
 import CONFIG from '../../../config'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const route = useRoute()
 const article = ref(null)
 const auth = getAuth()
@@ -29,7 +48,7 @@ axios.get(`${CONFIG.API_BASE_URL}/article/${route.params.id}`).then(res => {
 
 <template>
     <div>
-        <HeaderBar :isLoggedIn="isLoggedIn" />
+        <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
         <main class="pt-5 pb-24 px-4 flex flex-col bg-white min-h-[80vh]">
             <h2 class="font-semibold mb-1 text-xl">{{article?.title}}</h2>
             <p class="font-medium text-darkGray mb-4">{{article?.category}}</p>

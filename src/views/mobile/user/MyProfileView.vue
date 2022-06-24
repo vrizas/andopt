@@ -10,6 +10,25 @@ import EditProfilePopupVue from '../../../components/mobile/popup/EditProfilePop
 import EditPasswordPopupVue from '../../../components/mobile/popup/EditPasswordPopup.vue'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const router = useRouter()
 const auth = getAuth()
 const user = ref(null)
@@ -50,7 +69,7 @@ const signOutHandler = () => {
 
 <template>
   <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" />
+    <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
     <main class="pt-6 pb-24 px-4">
       <section class="flex items-center gap-4 relative">
         <img :src="user?.photoURL || defaultProfilePic" alt="profil" class="w-20 h-20 rounded-full object-cover" draggable="false">

@@ -8,6 +8,25 @@ import cities from '../../../utils/cities'
 import CONFIG from '../../../config'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const route = useRoute()
 const newLoc = route.params.location.replace(/_/g, '.')
 const queryInput = ref(route.params.query)
@@ -216,7 +235,7 @@ const showLoginPopup = () => {
 
 <template>
     <div>
-        <HeaderBar :isLoggedIn="isLoggedIn" :queryInput="queryInput" :locInput="locInput" />
+        <HeaderBar :isLoggedIn="isLoggedIn" :queryInput="queryInput" :locInput="locInput" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
         <main class="flex flex-col">
             <aside class="shadow-andopt py-7 px-8 h-fit rounded-md">
                 <form>

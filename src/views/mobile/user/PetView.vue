@@ -5,11 +5,28 @@ import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import skeleton from '../../../assets/images/skeleton.jpg'
 import CONFIG from '../../../config'
+import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
 defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
   openChatHandler: {
-    type: Function,
-    default: () => {}
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  },
+  showChatRoom: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -25,10 +42,12 @@ const petGender = ref('')
 const writerUser = ref(null)
 const auth = getAuth()
 const user = ref(null)
+const isLoggedIn = ref(false)
 
 onAuthStateChanged(auth, (account) => {
   if (account) {
     user.value = account
+    isLoggedIn.value = true
     user.value.getIdToken(/* forceRefresh */ true).then(async function (idToken) {
       axios.post(`${CONFIG.API_BASE_URL}/user/${user.value.uid}/lastseen`, {
         pet_id: route.params.id
@@ -55,6 +74,7 @@ onAuthStateChanged(auth, (account) => {
     })
   } else {
     user.value = null
+    isLoggedIn.value = false
   }
 })
 
@@ -121,7 +141,7 @@ const unlikePetHandler = () => {
 
 <template>
     <div>
-        <HeaderBar :isLoggedIn="isLoggedIn" />
+        <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" :showChatRoom="showChatRoom" />
         <main class="pb-24 flex flex-col gap-8 bg-white">
             <section class="relative flex flex-col gap-5 items-center">
                 <img :src="pet?.imageUrls[activeTabImage]" alt="cat" class="w-full h-72 object-cover">
@@ -164,11 +184,11 @@ const unlikePetHandler = () => {
                 </RouterLink>
                 <hr class="my-4 text-lightGray">
                 <div class="flex flex-col gap-3">
-                    <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, '')">
+                    <button class="bg-primary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, '', true)">
                         <font-awesome-icon icon="comment-dots" class="mr-1" />
                         Chat
                     </button>
-                    <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, route.params.id)">
+                    <button class="bg-secondary text-white font-semibold text-sm py-1 px-5 w-full rounded-md" @click="openChatHandler(writerUser?.id, route.params.id, true)">
                         <font-awesome-icon icon="paw" class="mr-1" />
                         Adopsi
                     </button>

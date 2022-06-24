@@ -6,6 +6,25 @@ import axios from 'axios'
 import CONFIG from '../../../config'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const articles = ref([])
 const auth = getAuth()
 const user = ref(null)
@@ -31,7 +50,7 @@ axios.get(`${CONFIG.API_BASE_URL}/articles`).then(res => {
 
 <template>
   <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" />
+    <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
     <main class="bg-white pt-5 pb-24 px-4">
       <h3 class="font-semibold text-darkGray mb-4">Artikel Terbaru</h3>
       <section class="grid grid-cols-1 gap-3">

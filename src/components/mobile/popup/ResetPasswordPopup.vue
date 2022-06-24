@@ -30,7 +30,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="absolute top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
+    class="fixed top-0 left-0 z-50 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden"
     ref="resetPasswordPopupContainer"
   >
     <div

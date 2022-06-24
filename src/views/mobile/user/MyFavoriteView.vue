@@ -6,6 +6,25 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import CONFIG from '../../../config'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
+
 const pets = ref([])
 const petGenders = ref([])
 
@@ -99,7 +118,7 @@ const deleteLastseenHandler = (lastseenId) => {
 
 <template>
   <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" />
+    <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
     <main class="pt-5 pb-24 px-4">
       <h2 class="text-primary font-semibold mb-4">Favorit Saya</h2>
       <section class="grid grid-cols-2 gap-3">
