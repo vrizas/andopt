@@ -13,6 +13,7 @@ import AppDesktop from './AppDesktop.vue'
 import routerMobile from './router/mobile'
 import routerDesktop from './router/desktop'
 import './assets/base.css'
+import { registerSW } from 'virtual:pwa-register'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
@@ -34,3 +35,13 @@ if (isMobile) {
     .use(routerDesktop)
     .mount('#app')
 }
+
+const intervalMS = 60 * 60 * 1000
+
+const updateSW = registerSW({
+  onRegistered (r) {
+    r && setInterval(() => {
+      r.update()
+    }, intervalMS)
+  }
+})
