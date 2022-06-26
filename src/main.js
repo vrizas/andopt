@@ -7,7 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import firebaseConfig from './firebaseConfig.json'
+import CONFIG from './config'
 import AppMobile from './AppMobile.vue'
 import AppDesktop from './AppDesktop.vue'
 import routerMobile from './router/mobile'
@@ -15,7 +15,7 @@ import routerDesktop from './router/desktop'
 import './assets/base.css'
 import { registerSW } from 'virtual:pwa-register'
 
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(CONFIG.firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
 const storage = getStorage(app)
