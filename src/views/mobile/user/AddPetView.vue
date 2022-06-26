@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import DropdownList from '../../../components/desktop/DropdownList.vue'
-import AutoCompleteList from '../../../components/desktop/AutoCompleteList.vue'
+import DropdownList from '../../../components/desktop/user/DropdownList.vue'
+import AutoCompleteList from '../../../components/desktop/user/AutoCompleteList.vue'
 import axios from 'axios'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
@@ -10,6 +10,25 @@ import { nanoid } from 'nanoid'
 import cities from '../../../utils/cities'
 import HeaderBar from '../../../components/mobile/HeaderBar.vue'
 import CONFIG from '../../../config'
+
+defineProps({
+  openChat: {
+    type: Boolean,
+    default: false
+  },
+  openChatHandler: {
+    type: Function
+  },
+  closeChatHandler: {
+    type: Function
+  },
+  chatReceiverUid: {
+    type: String
+  },
+  chatPetId: {
+    type: String
+  }
+})
 
 const petName = ref('')
 const petType = ref('')
@@ -197,7 +216,7 @@ const submitHandler = async () => {
 
 <template>
   <div>
-    <HeaderBar :isLoggedIn="isLoggedIn" />
+    <HeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" />
     <main class="pt-5 pb-24 px-4 bg-white">
       <h2 class="text-darkGray font-semibold mb-5">Unggah Hewan Peliharaan</h2>
       <form class="flex gap-10 flex-col">

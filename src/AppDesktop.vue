@@ -54,16 +54,32 @@ const closeChatHandler = () => {
 
 <template>
   <div>
+    <a href="#mainContent" class="skip-link">Menuju ke konten</a>
     <UserHeaderBar :isLoggedIn="isLoggedIn" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" v-if="route.name!=='spv-panel'&&route.name!=='admin-panel'" />
     <SpvHeaderBar v-else-if="route.name==='spv-panel'&&userRole==='spv'" />
     <AdminHeaderBar v-else-if="route.name==='admin-panel'&&userRole==='admin'" />
-    <RouterView :openChatHandler="openChatHandler" />
+    <RouterView id="mainContent" :openChatHandler="openChatHandler" />
     <FooterBar :isLoggedIn="isLoggedIn" v-if="route.name!=='spv-panel'&&route.name!=='admin-panel'" />
     <EmailVerificationPopup v-if="isEmailVerified === false" />
   </div>
 </template>
 
 <style>
+.skip-link {
+  position: fixed;
+  top: 90px;
+  left: -200px;
+  background-color: #2F957F;
+  border-radius: 5px;
+  color: #F9F9F9;
+  padding: 8px;
+  z-index: 101;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
 .trashButton:hover .icon, .likeButton:hover .icon {
   color: #EF144A;
 }

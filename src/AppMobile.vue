@@ -9,13 +9,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import NavigationBar from './components/mobile/NavigationBar.vue'
 import EmailVerificationPopup from './components/mobile/popup/EmailVerificationPopup.vue'
 
-const loginPopup = ref(null)
-const registerPopup = ref(null)
 const isLoggedIn = ref(false)
 const isEmailVerified = ref(null)
-const currentHashLink = reactive({
-  hash: '#'
-})
 
 const auth = getAuth()
 
@@ -30,62 +25,32 @@ onAuthStateChanged(auth, (user) => {
   }
 })
 
-function showLoginPopUpHandler () {
-  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
-  setTimeout(() => {
-    currentHashLink.hash = '#login'
-    gsap.to(loginPopup.value, { duration: 0.3, y: 0, ease: 'power2' })
-  }, 300)
+const openChat = ref(false)
+const showChatRoom = ref(false)
+const chatReceiverUid = ref('')
+const chatPetId = ref('')
 
-  history.replaceState(undefined, undefined, '#login')
-}
-
-function closeLoginPopUp () {
-  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
-  setTimeout(() => {
-    currentHashLink.hash = '#'
-    history.replaceState(undefined, undefined, '#')
-  }, 300)
-}
-
-function showRegisterPopUpHandler () {
-  gsap.to(loginPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
-  setTimeout(() => {
-    currentHashLink.hash = '#register'
-    gsap.to(registerPopup.value, { duration: 0.3, y: 0, ease: 'power2' })
-  }, 300)
-
-  history.replaceState(undefined, undefined, '#register')
-}
-
-function closeRegisterPopUp () {
-  gsap.to(registerPopup.value, { duration: 0.3, y: '100%', ease: 'power2' })
-  setTimeout(() => {
-    currentHashLink.hash = '#'
-    history.replaceState(undefined, undefined, '#')
-  }, 300)
-}
-
-const showLoginPopUp = computed(() => currentHashLink.hash === '#login')
-
-const showRegisterPopUp = computed(() => currentHashLink.hash === '#register')
-
-onMounted(() => {
-  currentHashLink.hash = window.location.hash || '#'
-
-  if (currentHashLink.hash === '#login') {
-    showLoginPopUpHandler()
-  } else if (currentHashLink.hash === '#register') {
-    showRegisterPopUpHandler()
+const openChatHandler = (uid, petId, openChatRoom) => {
+  if (!isLoggedIn.value) {
+    window.location.hash = '/login'
   }
-})
+  chatReceiverUid.value = uid || ''
+  chatPetId.value = petId || ''
+  showChatRoom.value = openChatRoom || false
+  openChat.value = true
+}
+
+const closeChatHandler = () => {
+  openChat.value = false
+}
 </script>
 
 <template>
   <div class="bg-lightGray">
     <div class="mobile-container">
+      <a href="#mainContent" class="skip-link">Menuju ke konten</a>
       <NavigationBar :isLoggedIn="isLoggedIn" />
-      <RouterView />
+      <RouterView id="mainContent" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" :showChatRoom="showChatRoom" />
       <EmailVerificationPopup v-if="isEmailVerified === false" />
     </div>
   </div>
