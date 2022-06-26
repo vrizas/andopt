@@ -48,8 +48,9 @@ const closeChatHandler = () => {
 <template>
   <div class="bg-lightGray">
     <div class="mobile-container">
+      <a href="#mainContent" class="skip-link">Menuju ke konten</a>
       <NavigationBar :isLoggedIn="isLoggedIn" />
-      <RouterView :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" :showChatRoom="showChatRoom" />
+      <RouterView id="mainContent" :openChat="openChat" :openChatHandler="openChatHandler" :closeChatHandler="closeChatHandler" :chatReceiverUid="chatReceiverUid" :chatPetId="chatPetId" :showChatRoom="showChatRoom" />
       <EmailVerificationPopup v-if="isEmailVerified === false" />
     </div>
   </div>
