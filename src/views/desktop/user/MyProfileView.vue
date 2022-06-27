@@ -1,11 +1,12 @@
 <script setup>
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { useRoute } from 'vue-router'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { useRoute, useRouter } from 'vue-router'
 import ProfileSetting from '../../../components/desktop/user/profile-tabs/ProfileSetting.vue'
 import MyUpload from '../../../components/desktop/user/profile-tabs/MyUpload.vue'
 import MyFavorite from '../../../components/desktop/user/profile-tabs/MyFavorite.vue'
 import LastSeen from '../../../components/desktop/user/profile-tabs/LastSeen.vue'
 
+const router = useRouter()
 const route = useRoute()
 const auth = getAuth()
 
@@ -14,6 +15,14 @@ onAuthStateChanged(auth, (account) => {
     window.location.href = '/#/login'
   }
 })
+
+const signOutHandler = () => {
+  signOut(auth).then(() => {
+    router.push('/')
+  }).catch((error) => {
+    alert(error.message)
+  })
+}
 </script>
 
 <template>

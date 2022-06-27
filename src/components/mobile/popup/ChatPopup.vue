@@ -289,7 +289,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-50 w-full h-full max-w-[600px] max-h-[600px] bg-[rgba(0,0,0,.5)] overflow-hidden"
+    class="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[99] w-full h-full max-w-[600px] bg-[rgba(0,0,0,.5)] overflow-hidden"
     ref="chatPopupContainer"
   >
     <div class="w-full h-full translate-y-full absolute top-0 left-0" ref="chatPopup">

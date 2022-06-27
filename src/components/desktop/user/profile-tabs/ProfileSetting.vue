@@ -137,7 +137,7 @@ const changePasswordHandler = () => {
     return
   }
 
-  updatePassword(user, newPassword.value).then(() => {
+  updatePassword(auth.currentUser, newPassword.value).then(() => {
     alert('Password berhasil diubah')
     newPassword.value = ''
     confirmNewPassword.value = ''
