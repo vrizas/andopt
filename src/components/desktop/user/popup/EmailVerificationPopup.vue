@@ -11,7 +11,7 @@ const auth = getAuth()
 const sendEmailVerificationHandler = async (e) => {
   e.preventDefault()
   sendEmailVerification(auth.currentUser, {
-    url: 'http://localhost:3000/'
+    url: 'https://andopt.vercel.app/'
   })
     .then(() => {
       alert('Email verifikasi telah dikirim')

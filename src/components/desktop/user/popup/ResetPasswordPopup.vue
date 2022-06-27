@@ -15,7 +15,7 @@ const resetPasswordHandler = async (e) => {
   e.preventDefault()
 
   sendPasswordResetEmail(auth, email.value, {
-    url: 'http://localhost:3000/'
+    url: 'https://andopt.vercel.app/'
   })
     .then(() => {
       alert('Email reset password telah dikirim')

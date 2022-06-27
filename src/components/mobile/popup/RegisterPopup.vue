@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
 import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator'
-import defaultProfilePic from '../../../assets/images/default-profile-pic.png'
+import defaultProfilePic from 'https://firebasestorage.googleapis.com/v0/b/andopt.appspot.com/o/images%2Fprofile-pics%2Fdefault-profile-pic.png?alt=media&token=112c503f-7b61-4e0f-a2bc-1ef0a2816a04'
 import CONFIG from '../../../config'
 
 const registerPopup = ref(null)
@@ -53,7 +53,7 @@ const submitHandler = async (e) => {
         })
       }).then(() => {
         sendEmailVerification(auth.currentUser, {
-          url: 'http://localhost:3000/'
+          url: 'https://andopt.vercel.app/'
         })
           .then(() => {
           }).catch(() => {
