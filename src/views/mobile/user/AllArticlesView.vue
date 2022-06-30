@@ -66,7 +66,7 @@ axios.get(`${CONFIG.API_BASE_URL}/articles`).then(res => {
           <div class="relative py-3 px-4 h-3/6">
             <h4 class="text-sm font-semibold truncate">{{article.title}}</h4>
             <p class="text-xs font-medium text-darkGray">{{article.category}}</p>
-            <p class="text-xs text-ellipsis overflow-hidden mt-2" v-html="article.content"></p>
+            <p class="text-xs text-ellipsis overflow-hidden h-1/2 mt-2" v-html="article.content"></p>
             <RouterLink :to="'/article/'+article.id" class="absolute bottom-5 text-xs text-primary inline-block">
               Baca Selengkapnya
             </RouterLink>
